@@ -19,8 +19,18 @@
 (defn error [msg]
   {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
 
-(defn success [msg]
-  {:status 200 :body (json-str msg) :headers {"content-type" "application/json"}})
+(defn success
+  ([msg]
+     {:status 200
+      :body (json-str msg)
+      :headers {"content-type" "application/json"}})
+  ([msg cb]
+     (if (nil? cb)
+       (success msg)
+       {:status 200
+	:body (str cb "(" (json-str msg) ")")
+	:headers {"content-type" "application/javascript"}})))
+
 
 (defn now []
   (System/currentTimeMillis))
@@ -75,7 +85,7 @@
       (swap! results conj r)
       (r* r))))
 
-(defn add-result [body]
+(defn add-result [body cb]
   (let [[err res]
 	(-> body
 	    (safe-read-json)
@@ -83,15 +93,18 @@
 	    (save-result))]
     (if err
       (error err)
-      (success res))))
+      (success res cb))))
+
+(defn cb [req]
+  ((req :query-params) "callback"))
 
 (defroutes foos-routes
   (GET "/ping" [:as req] (success {:msg "ponk"}))
 
   (GET "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
   
-  (GET  "/results" [:as req] (success {:results @results}))
-  (POST "/results" [:as req] (add-result (body req)))
+  (GET  "/results" [:as req] (success {:results @results} (cb req)))
+  (POST "/results" [:as req] (add-result (body req) (cb req)))
   
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))
