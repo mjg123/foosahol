@@ -1,0 +1,24 @@
+<html>
+
+  <head>
+    <title>foosaholics api</title>
+  </head>
+
+  <body>
+    <h1>The foosaholics API</h1>
+
+    There's only one resource of interest, at <a href="/results">/results</a>.  You can do:
+
+    <ul>
+      <li>GET: returns a list of results</li>
+      <li>POST: Send in a result.  POST body should contain JSON similar to this: <pre>
+{ "team1": { "colour": "red",  "score": 10, "attacker": "player1", "defender": "player2"},
+  "team2": { "colour": "blue", "score": 4,  "attacker": "player3", "defender": "player4"}}
+      </pre></li>
+    </ul>
+
+    Both GET and POST will accept a query param called "callback" for JSONP.
+
+  </body>
+
+</html>
