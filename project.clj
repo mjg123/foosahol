@@ -6,4 +6,5 @@
 		 [compojure "0.6.5"]
 		 [org.clojure/data.json "0.1.1"]
 		 [hiccup "0.3.7"]]
-  :dev-dependencies [[swank-clojure "1.4.0-SNAPSHOT"]])
+  :dev-dependencies [[swank-clojure "1.4.0-SNAPSHOT"]]
+  :resources-path "resources")
