@@ -107,12 +107,17 @@
 (defn cb [req]
   ((req :query-params) "callback"))
 
+(defn delete-result [timestamp]
+  (if (nil? timestamp)
+    (error "show me the timestamp")
+    (swap! results (partial filter #(not= timestamp (str (:timestamp %)))))))
+
 (defroutes foos-routes
   (GET "/ping" [:as req] (success {:msg "ponk"}))
 
   (GET "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
 
-  (DELETE "/results" [:as req] (do (reset! results []) {:status 204}))
+  (DELETE "/results" [:as req] (delete-result ((req :query-params) "timestamp")))
   
   (GET  "/results" [:as req]
 	(if (= "POST" ((req :headers) "x-http-method-override"))
