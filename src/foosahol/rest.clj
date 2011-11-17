@@ -111,6 +111,8 @@
   (GET "/ping" [:as req] (success {:msg "ponk"}))
 
   (GET "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
+
+  (DELETE "/results" [:as req] (reset! results []))
   
   (GET  "/results" [:as req]
 	(if (= "POST" ((req :headers) "x-http-method-override"))
