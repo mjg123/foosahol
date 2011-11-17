@@ -20,7 +20,9 @@
   ([msg]
      {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
   ([msg cb]
-     {:status 400 :body (str cb "(" (json-str {:msg msg}) ")") :headers {"content-type" "application/json"}}))
+     (if (nil? cb)
+       (error msg)
+       {:status 400 :body (str cb "(" (json-str {:msg msg}) ")") :headers {"content-type" "application/json"}})))
 
 (defn success
   ([msg]
