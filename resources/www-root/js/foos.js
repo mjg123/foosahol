@@ -137,7 +137,7 @@ var FOOS = (function(){
 		"url": "/results?body=" + JSON.stringify(state.get()),
 		"headers": {"X-HTTP-Method-Override": "POST"},
 		"success": function(d){ state.trigger("reset-score", d);},
-		"failure": function(d){alert("F" + d);},
+		"failure": function(d){alert("OH NOES, soz");},
 	    })
 	};
     };
