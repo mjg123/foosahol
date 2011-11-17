@@ -22,7 +22,7 @@
   ([msg cb]
      (if (nil? cb)
        (error msg)
-       {:status 400 :body (str cb "(" (json-str {:msg msg}) ")") :headers {"content-type" "application/json"}})))
+       {:status 400 :body (str cb "(" (json-str {:msg msg}) ");") :headers {"content-type" "application/json"}})))
 
 (defn success
   ([msg]
@@ -33,7 +33,7 @@
      (if (nil? cb)
        (success msg)
        {:status 200
-	:body (str cb "(" (json-str msg) ")")
+	:body (str cb "(" (json-str msg) ");")
 	:headers {"content-type" "application/javascript"}})))
 
 
