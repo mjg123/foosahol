@@ -112,10 +112,11 @@
 
   (GET "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
   
-  (GET  "/results" [:as req] (success {:results @results} (cb req)))
+  (GET  "/results" [:as req]
+	(if (= "POST" ((req :headers) "x-http-method-override"))
+	  (add-result ((req :query-params) "body") (cb req))
+	  (success {:results @results} (cb req))))
 
-  (GET  "/results/add" [:as req] (add-result ((req :query-params) "result") (cb req)))
-  
   (POST "/results" [:as req] (add-result (body req) (cb req)))
   
   (route/files "/" {:root "resources/www-root"})
