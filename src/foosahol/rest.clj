@@ -16,8 +16,11 @@
     (r* (read-json s))
     (catch Exception e (l* "bad json :("))))
 
-(defn error [msg]
-  {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
+(defn error
+  ([msg]
+     {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
+  ([msg cb]
+     {:status 400 :body (str cb "(" (json-str {:msg msg}) ")") :headers {"content-type" "application/json"}}))
 
 (defn success
   ([msg]
@@ -46,7 +49,7 @@
      
      (not (and (map? (result :team1))
 	       (map? (result :team2))))
-     (l* "needs json maps of team1 and team2")
+     (l* "needs team1 and team2")
 
      (not= 2 (count result))
      (l* "only 2 teams please")
@@ -70,6 +73,10 @@
 				      ((result :team2) :attacker)
 				      ((result :team2) :defender)])))
      (l* "both teams need an attacker and defender")
+
+     (not= 4 (count (into #{} [((result :team1) :attacker) ((result :team1) :defender)
+		               ((result :team2) :attacker) ((result :team2) :defender)])))
+     (l* "all players need to be distinct")
      
      :else (r* (assoc result :timestamp (now))))))
 
@@ -92,7 +99,7 @@
 	    (check-format)
 	    (save-result))]
     (if err
-      (error err)
+      (error err cb)
       (success res cb))))
 
 (defn cb [req]
@@ -104,6 +111,9 @@
   (GET "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
   
   (GET  "/results" [:as req] (success {:results @results} (cb req)))
+
+  (GET  "/results/add" [:as req] (add-result ((req :query-params) "result") (cb req)))
+  
   (POST "/results" [:as req] (add-result (body req) (cb req)))
   
   (route/files "/" {:root "resources/www-root"})
