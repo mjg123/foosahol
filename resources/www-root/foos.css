@@ -1,0 +1,13 @@
+body { background-color: #080; }
+
+input {border: 1px solid teal;
+       background-color: #FFF;}
+
+select {border: 1px solid teal;
+       background-color: #FFF;}
+
+.submit {
+    font-size: 24pt;
+}
+
+.scorebutton
