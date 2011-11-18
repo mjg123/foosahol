@@ -42,7 +42,7 @@
   (System/currentTimeMillis))
 
 (defn merge-meta [result]
-  (let [timestamp (get-in result [:meta :timestamp] (now)))]
+  (let [timestamp (get-in result [:meta :timestamp] (now))]
     (assoc-in result [:meta :timestamp] timestamp)))
 
 (defn check-format [result]
