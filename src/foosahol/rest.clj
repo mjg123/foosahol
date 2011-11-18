@@ -54,16 +54,21 @@
 	       (map? (result :team2))))
      (l* "needs team1 and team2")
 
-     (not= 2 (count result))
-     (l* "only 2 teams please")
+     (not (or (= #{:team1 :team2} (set (keys result)))
+	      (= #{:team1 :team2 :meta} (set (keys result)))))
+     (l* "only specify team1, team2 and optionally meta")
      
      (not (contains? #{#{"black" "yellow"} #{"red" "blue"}}
-		     (set (map :colour (vals result)))))
+		     (into #{} [((result :team1) :colour)
+				((result :team2) :colour)] )))
      (l* "teams must have colours of red/blue or yellow/black")
 
      (not (and (integer? ((result :team1) :score))
 	       (integer? ((result :team2) :score))))
      (l* "team1 and team2 must have integer scores")
+
+     (not (or (nil? (result :meta)) (map? (result :meta))))
+     (l* "if specified, meta must be a map")
      
      (not (some #{10} (map :score (vals result))))
      (l* "one team must have scored ten goals")
@@ -81,7 +86,7 @@
 		               ((result :team2) :attacker) ((result :team2) :defender)])))
      (l* "all players need to be distinct")
      
-     :else (r* (assoc result :timestamp (now))))))
+     :else (r* (assoc result :timestamp (now)))))) ;; add meta if not present
 
 (comment
   (check-format [nil
