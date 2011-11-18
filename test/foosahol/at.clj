@@ -17,6 +17,10 @@
 (defn dissoc-in [ data keys val ]
   (assoc-in data keys (dissoc (get-in data keys) val)))
 
+
+;; start with an empty result set
+(drv/PUT "/results" (body {:results []}))
+
 (facts
  "ATs"
 
@@ -39,9 +43,20 @@
    (fact (:status ok-response) => 200)
    (fact (get-in (read-json ok-response) [:body :meta :timestamp]) => #(not (nil? %)))
    (fact (dissoc-in (read-json (:body ok-response)) [:meta] :timestamp) => g)
-   
+
    (drv/DELETE (str "/results?timestamp="  (get-in (read-json (:body ok-response)) [:meta :timestamp]))))
 
- (fact (:results (read-json (:body (drv/GET "/results")))) => [])
- 
- )
+ (do
+   (fact (count (:results (read-json (:body (drv/GET "/results"))))) => 0)
+   (drv/POST "/results" (body g))
+   (drv/POST "/results" (body g))
+   (drv/POST "/results" (body g))
+
+   (let [res-3 (:body (drv/GET "/results"))]
+     (fact (count (:results (read-json res-3))) => 3)
+
+     (drv/PUT "/results" (body {:results []}))
+     (fact (count (:results (read-json (:body (drv/GET "/results"))))) => 0)
+
+     (drv/PUT "/results" (body (read-json res-3)))
+     (fact (count (:results (read-json (:body (drv/GET "/results"))))) => 3))))
