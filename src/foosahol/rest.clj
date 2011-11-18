@@ -126,7 +126,8 @@
 
   (POST "/results" [:as req] (add-result (body req) (cb req)))
 
-  (POST "/import" [:as req] (swap! results (body req)))
+  (POST "/import" [:as req] (do (swap! results (read-json (body req)))
+				@results))
   
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))
