@@ -115,7 +115,8 @@
 (defroutes foos-routes
   (GET "/ping" [:as req] (success {:msg "ponk"}))
 
-  (GET "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
+  (GET  "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
+  (POST "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
 
   (DELETE "/results" [:as req] (delete-result ((req :query-params) "timestamp")))
   
@@ -126,9 +127,11 @@
 
   (POST "/results" [:as req] (add-result (body req) (cb req)))
 
-  (POST "/import" [:as req] (do (swap! results (read-json (body req)))
-				@results))
+  (POST "/import" [:as req] (let [b (body req)]
+			      (reset! results (:results (read-json b)))
+			      @results))
   
   (route/files "/" {:root "resources/www-root"})
-  (route/not-found "404. Problem?"))
+  (route/not-found "404. Problem?")
 
+)
