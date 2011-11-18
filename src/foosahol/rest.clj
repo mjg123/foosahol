@@ -1,6 +1,7 @@
 (ns foosahol.rest
   (:use compojure.core)
   (:use clojure.data.json)
+  (:use [slingshot.slingshot :only [throw+ try+]])
   (:require [compojure.route :as route]))
 
 ;; we don't need no stinkin database
@@ -9,13 +10,10 @@
 (defn body [req]
   (slurp (req :body)))
 
-(defn l* [o] [o nil])
-(defn r* [o] [nil o])
-
 (defn safe-read-json [s]
   (try
-    (r* (read-json s))
-    (catch Exception e (l* "bad json :("))))
+    (read-json s)
+    (catch Exception e (throw+ "bad json :("))))
 
 (defn error
   ([msg]
@@ -34,76 +32,72 @@
      (if (nil? cb)
        (success msg)
        {:status 200
-	:body (str cb "(" (json-str msg) ");")
-	:headers {"content-type" "application/javascript"}})))
+        :body (str cb "(" (json-str msg) ");")
+        :headers {"content-type" "application/javascript"}})))
 
 
 (defn now []
   (System/currentTimeMillis))
 
-(defn check-format [[l result]]
-  (if l
-    (l* l)
+(defn check-format [result]
 
-    (cond
+  (cond
 
-     (not (map? result))
-     (l* "needs to be a json map")
-     
-     (not (and (map? (result :team1))
-	       (map? (result :team2))))
-     (l* "needs team1 and team2")
+   (not (map? result))
+   (throw+ "needs to be a json map")
 
-     (not (or (= #{:team1 :team2} (set (keys result)))
-	      (= #{:team1 :team2 :meta} (set (keys result)))))
-     (l* "only specify team1, team2 and optionally meta")
-     
-     (not (contains? #{#{"black" "yellow"} #{"red" "blue"}}
-		     (into #{} [((result :team1) :colour)
-				((result :team2) :colour)] )))
-     (l* "teams must have colours of red/blue or yellow/black")
+   (not (and (map? (result :team1))
+             (map? (result :team2))))
+   (throw+ "needs team1 and team2")
 
-     (not (and (integer? ((result :team1) :score))
-	       (integer? ((result :team2) :score))))
-     (l* "team1 and team2 must have integer scores")
+   (not (or (= #{:team1 :team2} (set (keys result)))
+            (= #{:team1 :team2 :meta} (set (keys result)))))
+   (throw+ "only specify team1, team2 and optionally meta")
 
-     (not (or (nil? (result :meta)) (map? (result :meta))))
-     (l* "if specified, meta must be a map")
-     
-     (not (some #{10} (map :score (vals result))))
-     (l* "one team must have scored ten goals")
+   (not (contains? #{#{"black" "yellow"} #{"red" "blue"}}
+                   (into #{} [((result :team1) :colour)
+                              ((result :team2) :colour)] )))
+   (throw+ "teams must have colours of red/blue or yellow/black")
 
-     (not (<= 10 (+ ((result :team1) :score) ((result :team2) :score)) 19))
-     (l* "total score must be between 10 & 19 goals")
+   (not (and (integer? ((result :team1) :score))
+             (integer? ((result :team2) :score))))
+   (throw+ "team1 and team2 must have integer scores")
 
-     (not (every? true? (map string? [((result :team1) :attacker)
-				      ((result :team1) :defender)
-				      ((result :team2) :attacker)
-				      ((result :team2) :defender)])))
-     (l* "both teams need an attacker and defender")
+   (not (or (nil? (result :meta)) (map? (result :meta))))
+   (throw+ "if specified, meta must be a map")
 
-     (not= 4 (count (into #{} [((result :team1) :attacker) ((result :team1) :defender)
-		               ((result :team2) :attacker) ((result :team2) :defender)])))
-     (l* "all players need to be distinct")
-     
-     :else (r* (merge {:timestamp (now) :meta {}} result))))) ;; add meta if not present
+   (not (some #{10} (map :score (vals result))))
+   (throw+ "one team must have scored ten goals")
 
-(defn save-result [[l r]]
-  (if l
-    (l* l)
-    (do
-      (swap! results conj r)
-      (r* r))))
+   (not (<= 10 (+ ((result :team1) :score) ((result :team2) :score)) 19))
+   (throw+ "total score must be between 10 & 19 goals")
+
+   (not (every? true? (map string? [((result :team1) :attacker)
+                                    ((result :team1) :defender)
+                                    ((result :team2) :attacker)
+                                    ((result :team2) :defender)])))
+   (throw+ "both teams need an attacker and defender")
+
+   (not= 4 (count (into #{} [((result :team1) :attacker) ((result :team1) :defender)
+                             ((result :team2) :attacker) ((result :team2) :defender)])))
+   (throw+ "all players need to be distinct")
+
+   :else (merge {:timestamp (now) :meta {}} result)))
+
+(defn save-result [r]
+  (do
+    (swap! results conj r)
+    r))
 
 (defn add-result [body cb]
-  (let [[err res]
-	(-> body
-	    (safe-read-json)
-	    (check-format)
-	    (save-result))]
-    (if err
-      (error err cb)
-      (success res cb))))
+  (try+
+   (-> body
+       (safe-read-json)
+       (check-format)
+       (save-result)
+       (success cb))
+   (catch string? s
+     (error s cb))))
 
 (defn cb [req]
   ((req :query-params) "callback"))
@@ -120,17 +114,17 @@
   (POST "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
 
   (DELETE "/results" [:as req] (delete-result ((req :query-params) "timestamp")))
-  
+
   (GET  "/results" [:as req]
-	(if (= "POST" ((req :headers) "x-http-method-override"))
-	  (add-result ((req :query-params) "body") (cb req))
-	  (success {:results @results} (cb req))))
+        (if (= "POST" ((req :headers) "x-http-method-override"))
+          (add-result ((req :query-params) "body") (cb req))
+          (success {:results @results} (cb req))))
 
   (POST "/results" [:as req] (add-result (body req) (cb req)))
 
   (POST "/import" [:as req] (let [b (body req)]
-			      (reset! results (:results (read-json b)))
-			      (success @results)))
-  
+                              (reset! results (:results (read-json b)))
+                              (success @results)))
+
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))

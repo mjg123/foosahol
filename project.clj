@@ -5,6 +5,7 @@
 		 [ring/ring-devel "1.0.0-RC1"]
 		 [compojure "0.6.5"]
 		 [org.clojure/data.json "0.1.1"]
-		 [hiccup "0.3.7"]]
+		 [hiccup "0.3.7"]
+		 [slingshot "0.8.0"]]
   :dev-dependencies [[swank-clojure "1.4.0-SNAPSHOT"]]
   :resources-path "resources")
