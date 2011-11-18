@@ -41,6 +41,15 @@
 (defn now []
   (System/currentTimeMillis))
 
+(defn merge-meta [result]
+  (dissoc
+   (merge
+    {:meta
+     {:timestamp
+      (get-in result [:meta :timestamp]
+	      (get-in result [:timestamp] (now)))}} result)
+   :timestamp))
+
 (defn check-format [result]
 
   (cond
@@ -84,7 +93,7 @@
                              ((result :team2) :attacker) ((result :team2) :defender)])))
    (throw+ "all players need to be distinct")
 
-   :else (merge {:timestamp (now) :meta {}} result)))
+   :otherwise (merge-meta result)))
 
 (defn save-result [r]
   (do
