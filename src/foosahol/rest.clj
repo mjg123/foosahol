@@ -86,12 +86,7 @@
 		               ((result :team2) :attacker) ((result :team2) :defender)])))
      (l* "all players need to be distinct")
      
-     :else (r* (assoc result :timestamp (now)))))) ;; add meta if not present
-
-(comment
-  (check-format [nil
-		 {:team1 {:colour "red" :score 10 :attacker "a" :defender "b"}
-		  :team2 {:colour "blue" :score 0 :attacker "e" :defender "f"}}]))
+     :else (r* (merge {:timestamp (now) :meta {}} result))))) ;; add meta if not present
 
 (defn save-result [[l r]]
   (if l
