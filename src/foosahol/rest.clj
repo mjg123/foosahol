@@ -125,6 +125,8 @@
 	  (success {:results @results} (cb req))))
 
   (POST "/results" [:as req] (add-result (body req) (cb req)))
+
+  (POST "/import" [:as req] (swap! results (body req)))
   
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))
