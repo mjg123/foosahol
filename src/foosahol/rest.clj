@@ -3,6 +3,7 @@
   (:use clojure.data.json)
   (:require [compojure.route :as route]))
 
+;; we don't need no stinkin database
 (def results (atom []))
 
 (defn body [req]
