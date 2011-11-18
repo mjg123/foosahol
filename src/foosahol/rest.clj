@@ -17,8 +17,10 @@
 
 (defn error
   ([msg]
+     (println msg)
      {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
   ([msg cb]
+     (println msg)
      (if (nil? cb)
        (error msg)
        {:status 400 :body (str cb "(" (json-str {:msg msg}) ");") :headers {"content-type" "application/json"}})))
@@ -50,9 +52,9 @@
              (map? (result :team2))))
    (throw+ "needs team1 and team2")
 
-   (not (or (= #{:team1 :team2} (set (keys result)))
-            (= #{:team1 :team2 :meta} (set (keys result)))))
-   (throw+ "only specify team1, team2 and optionally meta")
+;   (not (or (= #{:team1 :team2} (set (keys result)))
+;            (= #{:team1 :team2 :meta} (set (keys result)))
+;   (throw+ "only specify team1, team2 and optionally meta")
 
    (not (contains? #{#{"black" "yellow"} #{"red" "blue"}}
                    (into #{} [((result :team1) :colour)
@@ -122,8 +124,9 @@
 
   (POST "/results" [:as req] (add-result (body req) (cb req)))
 
-  (POST "/import" [:as req] (let [b (body req)]
-                              (reset! results (:results (read-json b)))
+  (PUT "/results" [:as req] (let [b (body req)]
+			      (doseq [res (:results (read-json b))]
+				(add-result (json-str res) nil))
                               (success @results)))
 
   (route/files "/" {:root "resources/www-root"})
