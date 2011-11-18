@@ -17,7 +17,6 @@
 
 (defn error
   ([msg]
-     (println msg)
      {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
   ([msg cb]
      (println msg)
@@ -46,9 +45,7 @@
     (assoc-in result [:meta :timestamp] timestamp)))
 
 (defn check-format [result]
-
   (cond
-
    (not (map? result))
    (throw+ "needs to be a json map")
 
@@ -111,7 +108,7 @@
 (defn delete-result [timestamp]
   (if (nil? timestamp)
     (error "show me the timestamp")
-    (swap! results (partial filter #(not= timestamp (str (:timestamp %)))))))
+    (swap! results (partial filter #(not= timestamp (str (get-in % [:meta :timestamp])))))))
 
 (defroutes foos-routes
   (GET "/ping" [:as req] (success {:msg "ponk"}))
