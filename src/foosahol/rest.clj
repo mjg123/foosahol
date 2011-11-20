@@ -2,10 +2,9 @@
   (:use compojure.core)
   (:use clojure.data.json)
   (:use [slingshot.slingshot :only [throw+ try+]])
-  (:require [compojure.route :as route]))
+  (:require [compojure.route :as route])
+  (:require [foosahol.persistence :as p]))
 
-;; we don't need no stinkin database
-(def results (atom []))
 
 (defn body [req]
   (slurp (req :body)))
@@ -19,7 +18,6 @@
   ([msg]
      {:status 400 :body (json-str {:msg msg}) :headers {"content-type" "application/json"}})
   ([msg cb]
-     (println msg)
      (if (nil? cb)
        (error msg)
        {:status 400 :body (str cb "(" (json-str {:msg msg}) ");") :headers {"content-type" "application/json"}})))
@@ -87,17 +85,12 @@
 
    :otherwise (merge-meta result)))
 
-(defn save-result [r]
-  (do
-    (swap! results conj r)
-    r))
-
 (defn add-result [body cb]
   (try+
    (-> body
        (safe-read-json)
        (check-format)
-       (save-result)
+       (p/save-result)
        (success cb))
    (catch string? s
      (error s cb))))
@@ -105,31 +98,31 @@
 (defn cb [req]
   ((req :query-params) "callback"))
 
-(defn delete-result [timestamp]
-  (if (nil? timestamp)
-    (error "show me the timestamp")
-    (swap! results (partial filter #(not= timestamp (str (get-in % [:meta :timestamp])))))))
-
 (defroutes foos-routes
   (GET "/ping" [:as req] (success {:msg "ponk"}))
 
   (GET  "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
   (POST "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
 
-  (DELETE "/results" [:as req] (delete-result ((req :query-params) "timestamp")))
+  (DELETE "/results" [:as req]
+	  (if-let [timestamp ((req :query-params) "timestamp")]
+	    (do (p/delete-result timestamp)
+		{:status 204})
+	    (error "show me the timestamp")))
 
   (GET  "/results" [:as req]
         (if (= "POST" ((req :headers) "x-http-method-override"))
           (add-result ((req :query-params) "body") (cb req))
-          (success {:results @results} (cb req))))
+          (success (p/all-results) (cb req))))
 
-  (POST "/results" [:as req] (add-result (body req) (cb req)))
+  (POST "/results" [:as req]
+	(add-result (body req) (cb req)))
 
-  (PUT "/results" [:as req] (let [b (body req)]
-			      (reset! results [])
-                              (doseq [res (:results (read-json b))]
-                                (add-result (json-str res) nil))
-                              (success @results)))
-
+  (PUT "/results" [:as req]
+       (p/reset-results)
+       (doseq [res (:results (read-json (body req)))]
+	 (add-result (json-str res) nil))
+       (success (p/all-results)))
+  
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))

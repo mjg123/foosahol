@@ -44,7 +44,9 @@
    (fact (get-in (read-json ok-response) [:body :meta :timestamp]) => #(not (nil? %)))
    (fact (dissoc-in (read-json (:body ok-response)) [:meta] :timestamp) => g)
 
-   (drv/DELETE (str "/results?timestamp="  (get-in (read-json (:body ok-response)) [:meta :timestamp]))))
+   (drv/DELETE (str "/results?timestamp="  (get-in (read-json (:body ok-response)) [:meta :timestamp])))
+   (fact (count (:results (read-json (:body (drv/GET "/results"))))) => 0))
+
 
  (do
    (fact (count (:results (read-json (:body (drv/GET "/results"))))) => 0)
