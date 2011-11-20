@@ -35,7 +35,7 @@
     result)
   
   (defn all-results []
-    {:results (map #(dissoc % :_id) (fetch :results))})
+    {:results (map #(dissoc % :_id) (fetch :results :sort {:meta.timestamp -1}))})
 
   (defn reset-results []
     (drop-coll! :results))

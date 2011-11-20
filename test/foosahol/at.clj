@@ -62,3 +62,8 @@
 
      (drv/PUT "/results" (body (read-json res-3)))
      (fact (count (:results (read-json (:body (drv/GET "/results"))))) => 3))))
+
+
+
+;; tidy up
+(drv/PUT "/results" (body {:results []}))
