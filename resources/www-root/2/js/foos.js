@@ -185,5 +185,6 @@ var APP = (function(model,ui){
 
 (function(){
     'use strict';
+//	UI.showPage("game-in-progress");
     APP.start();
 }());

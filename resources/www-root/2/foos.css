@@ -2,8 +2,8 @@ html,body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    background-color: #040;
+/*    overflow: hidden;
+*/    background-color: #040;
 }
 
 div.page {
@@ -68,9 +68,26 @@ div.player {
     padding: 16px;
 }
 
+div.score-counter {
+    float: left;
+    width: 4%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+input.scorer {
+    display: block;
+}
+
 div#table {
-    width: 50%;
+    width: 60%;
     margin: 8px auto;
+}
+
+div#pitch {
+    float: left;
+    width: 90%;
+    margin: 1%;
 }
 
 img#tableimg {

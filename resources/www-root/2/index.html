@@ -32,19 +32,53 @@
     </div>
 
     <div class="page" id="game-in-progress">
-      <h1>Game Time</h1>
+      <h1>Game Time Bizzatches!</h1>
 
       <div class="teambar" id="team1bar">
         <select id="t1a"></select>
-	<input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
+        <input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
         <select id="t1d"></select>
       </div>
+
       <div id="table">
-        <img id="tableimg" src="img/pitch.png"/>
+
+        <div class="score-counter">
+          <input class="scorer" type="button" value="0"/>
+          <input class="scorer" type="button" value="1"/>
+          <input class="scorer" type="button" value="2"/>
+          <input class="scorer" type="button" value="3"/>
+          <input class="scorer" type="button" value="4"/>
+          <input class="scorer" type="button" value="5"/>
+          <input class="scorer" type="button" value="6"/>
+          <input class="scorer" type="button" value="7"/>
+          <input class="scorer" type="button" value="8"/>
+          <input class="scorer" type="button" value="9"/>
+        </div>
+
+        <div id="pitch">
+          <img id="tableimg" src="img/pitch.png"/>
+        </div>
+
+        <div class="score-counter">
+          <input class="scorer" type="button" value="9"/>
+          <input class="scorer" type="button" value="8"/>
+          <input class="scorer" type="button" value="7"/>
+          <input class="scorer" type="button" value="6"/>
+          <input class="scorer" type="button" value="5"/>
+          <input class="scorer" type="button" value="4"/>
+          <input class="scorer" type="button" value="3"/>
+          <input class="scorer" type="button" value="2"/>
+          <input class="scorer" type="button" value="1"/>
+          <input class="scorer" type="button" value="0"/>
+        </div>
+
+	<div style="clear:both;"></div>
+
       </div>
+
       <div class="teambar" id="team2bar">
         <select id="t2d"></select>
-	<input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
+        <input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
         <select id="t2a"></select>
       </div>
 
