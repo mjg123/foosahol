@@ -75,11 +75,13 @@ var UI = (function(){
     chosenPlayers = [],
 
     choosePlayer = function(name){
+	if (chosenPlayers.length === 4){
+	    return;
+	}
         chosenPlayers.push(name);
         var choiceElem = d('player-choice-' + chosenPlayers.length);
         choiceElem.innerHTML = name;
         choiceElem.className = "player";
-
     },
 
     createPlayerElem = function(name){
@@ -111,8 +113,14 @@ var UI = (function(){
             console.log(name);
             playerElem.onclick = null;
         };
-
         elem.appendChild( playerElem );
+    },
+
+    makeOption = function(name){
+	var opt = m('option');
+	opt.value = name;
+	opt.innerHTML = name;
+	return opt;
     };
 
     ui.choosePlayers = function(players, cb){
@@ -130,6 +138,25 @@ var UI = (function(){
         d(page).style.display = "block";
     };
 
+// Game screen
+
+    ui.addTeamPlayers = function (players) {
+	var players = _(players).shuffle(),
+	count=0;
+
+	_(players).each(function(n){
+	    d('t1a').appendChild(makeOption(n));
+	    d('t1d').appendChild(makeOption(n));
+	    d('t2a').appendChild(makeOption(n));
+	    d('t2d').appendChild(makeOption(n));
+	});
+
+	d('t1a').selectedIndex = 0;
+	d('t1d').selectedIndex = 1;
+	d('t2a').selectedIndex = 2;
+	d('t2d').selectedIndex = 3;
+    }
+
     return ui;
 }());
 
@@ -139,25 +166,24 @@ var APP = (function(model,ui){
     var app = {},
 
     playersChosen = function(players){
-        console.log("You have chosen");
-        console.log(players);
+	ui.showPage("game-in-progress");
+	ui.addTeamPlayers(players);
     },
 
     modelLoaded = function(){
-        ui.showPage( "choose-players-page" );
+        ui.showPage("choose-players-page");
         ui.choosePlayers(model.getAllPlayers(), playersChosen);
     };
 
     app.start = function(){
-        model.load( modelLoaded );
+        ui.showPage("loading-page");
+        model.load(modelLoaded);
     };
 
     return app;
-
 }(MODEL,UI));
 
 (function(){
     'use strict';
-    UI.showPage("loading-page");
     APP.start();
 }());

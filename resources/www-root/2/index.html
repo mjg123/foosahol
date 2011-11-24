@@ -17,7 +17,7 @@
       <h1>Who's in?</h1>
 
       <div id="players">
-	<h2>The bench</h2>
+        <h2>The bench</h2>
       </div>
 
       <div id="team">
@@ -26,10 +26,30 @@
         <div class="player empty" id="player-choice-2">empty</div>
         <div class="player empty" id="player-choice-3">empty</div>
         <div class="player empty" id="player-choice-4">empty</div>
-	<input type="button" id="chosen-players" value="lets go"/>
+        <input type="button" id="chosen-players" value="lets go"/>
       </div>
 
     </div>
+
+    <div class="page" id="game-in-progress">
+      <h1>Game Time</h1>
+
+      <div class="teambar" id="team1bar">
+        <select id="t1a"></select>
+	<input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
+        <select id="t1d"></select>
+      </div>
+      <div id="table">
+        <img id="tableimg" src="img/pitch.png"/>
+      </div>
+      <div class="teambar" id="team2bar">
+        <select id="t2d"></select>
+	<input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
+        <select id="t2a"></select>
+      </div>
+
+    </div>
+
 
 
     <script src="js/lib/underscore-min.js"></script>

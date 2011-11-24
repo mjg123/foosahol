@@ -67,3 +67,25 @@ div.player {
     margin-bottom: 8px;
     padding: 16px;
 }
+
+div#table {
+    width: 50%;
+    margin: 8px auto;
+}
+
+img#tableimg {
+    width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+div.teambar {
+    margin: 0 auto;
+    text-align: center;
+}
+
+input.team-swap {
+    margin-left: 8%;
+    margin-right: 8%;
+}
