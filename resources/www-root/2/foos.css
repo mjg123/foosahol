@@ -9,6 +9,7 @@ html,body {
 div.page {
     min-height: 100%;
     padding: 1%;
+    display: none;
 }
 
 h1 {
@@ -17,18 +18,22 @@ h1 {
     text-align: center;
     margin-top: 0;
     font-weight: normal;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
 }
 
 div#players {
-    border: 1px solid red;
     float: left;
     width: 60%;
+    background-color: #EEE;
+    padding: 8px;
+    border-radius: 10px;
+    text-align: center;
 }
 
 div#players div.player {
     display: inline-block;
-    margin-left: auto;
-    margin-right:auto;
+    margin: 8px;
 }
 
 div#team {
@@ -38,6 +43,10 @@ div#team {
     padding: 8px;
     border-radius: 10px;
     text-align: center;
+}
+
+div.empty {
+    color: #888;
 }
 
 h2 {

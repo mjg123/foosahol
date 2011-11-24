@@ -6,27 +6,33 @@
     <link rel="stylesheet" type="text/css" href="reset.css"/>
     <link rel="stylesheet" type="text/css" href="foos.css"/>
 
-    <script data-main="js/main" src="js/lib/require.js"></script>
-
   </head>
   <body>
-    <div class="page" id="playerchooser">
+
+    <div class="page" id="loading-page">
+      <h1>Loading</h1>
+    </div>
+
+    <div class="page" id="choose-players-page">
       <h1>Who's in?</h1>
 
       <div id="players">
+	<h2>The bench</h2>
       </div>
 
       <div id="team">
-	<h2>The team</h2>
-	<div class="player empty" id="p1slot">empty</div>
-	<div class="player empty" id="p2slot">empty</div>
-	<div class="player empty" id="p3slot">empty</div>
-	<div class="player empty" id="p4slot">empty</div>
+        <h2>The team</h2>
+        <div class="player empty" id="player-choice-1">empty</div>
+        <div class="player empty" id="player-choice-2">empty</div>
+        <div class="player empty" id="player-choice-3">empty</div>
+        <div class="player empty" id="player-choice-4">empty</div>
+	<input type="button" id="chosen-players" value="lets go"/>
       </div>
 
     </div>
 
 
-
+    <script src="js/lib/underscore-min.js"></script>
+    <script src="js/foos.js"></script>
   </body>
 </html>
