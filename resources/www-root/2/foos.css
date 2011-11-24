@@ -34,6 +34,7 @@ div#players {
 div#players div.player {
     display: inline-block;
     margin: 8px;
+    cursor: pointer;
 }
 
 div#team {
