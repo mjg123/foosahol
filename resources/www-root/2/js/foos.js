@@ -75,9 +75,9 @@ var UI = (function(){
     chosenPlayers = [],
 
     choosePlayer = function(name){
-	if (chosenPlayers.length === 4){
-	    return;
-	}
+        if (chosenPlayers.length === 4){
+            return;
+        }
         chosenPlayers.push(name);
         var choiceElem = d('player-choice-' + chosenPlayers.length);
         choiceElem.innerHTML = name;
@@ -117,10 +117,10 @@ var UI = (function(){
     },
 
     makeOption = function(name){
-	var opt = m('option');
-	opt.value = name;
-	opt.innerHTML = name;
-	return opt;
+        var opt = m('option');
+        opt.value = name;
+        opt.innerHTML = name;
+        return opt;
     };
 
     ui.choosePlayers = function(players, cb){
@@ -128,8 +128,8 @@ var UI = (function(){
         addNewKidPlayer();
         d('chosen-players').onclick = function(){
             if( chosenPlayers.length === 4 ){
-		cb(chosenPlayers);
-	    }
+                cb(chosenPlayers);
+            }
         };
     };
 
@@ -138,24 +138,31 @@ var UI = (function(){
         d(page).style.display = "block";
     };
 
-// Game screen
+    // Game screen
 
     ui.addTeamPlayers = function (players) {
-	var players = _(players).shuffle(),
-	count=0;
+        var players = _(players).shuffle(),
+        count=0;
 
-	_(players).each(function(n){
-	    d('t1a').appendChild(makeOption(n));
-	    d('t1d').appendChild(makeOption(n));
-	    d('t2a').appendChild(makeOption(n));
-	    d('t2d').appendChild(makeOption(n));
+        _(players).each(function(n){
+            d('t1a').appendChild(makeOption(n));
+            d('t1d').appendChild(makeOption(n));
+            d('t2a').appendChild(makeOption(n));
+            d('t2d').appendChild(makeOption(n));
+        });
+
+        d('t1a').selectedIndex = 0;
+        d('t1d').selectedIndex = 1;
+        d('t2a').selectedIndex = 2;
+        d('t2d').selectedIndex = 3;
+    };
+
+    ui.addScoreHandlers = function(){
+	_(_.range(10)).chain().each(function(n){
+	    d('t1score'+n).onclick = function(){ console.log([10,n]); };
+	    d('t2score'+n).onclick = function(){ console.log([n,10]); };
 	});
-
-	d('t1a').selectedIndex = 0;
-	d('t1d').selectedIndex = 1;
-	d('t2a').selectedIndex = 2;
-	d('t2d').selectedIndex = 3;
-    }
+    };
 
     return ui;
 }());
@@ -166,8 +173,8 @@ var APP = (function(model,ui){
     var app = {},
 
     playersChosen = function(players){
-	ui.showPage("game-in-progress");
-	ui.addTeamPlayers(players);
+        ui.showPage("game-in-progress");
+        ui.addTeamPlayers(players);
     },
 
     modelLoaded = function(){
@@ -185,6 +192,7 @@ var APP = (function(model,ui){
 
 (function(){
     'use strict';
-//	UI.showPage("game-in-progress");
-    APP.start();
+    UI.showPage("game-in-progress");
+    UI.addScoreHandlers();
+    //    APP.start();
 }());
