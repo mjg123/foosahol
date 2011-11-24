@@ -1,5 +1,8 @@
 /*globals console,_,XMLHttpRequest,document,window*/
 
+// TODO: modularise this
+// INFO: http://ajaxpatterns.org/XMLHttpRequest_Call#Creating_XMLHttpRequest_Objects
+
 var XHR = (function(){
     'use strict';
 
