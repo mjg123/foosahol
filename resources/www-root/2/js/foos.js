@@ -192,7 +192,7 @@ var APP = (function(model,ui){
 
 (function(){
     'use strict';
-    UI.showPage("game-in-progress");
-    UI.addScoreHandlers();
-    //    APP.start();
+    //UI.showPage("game-in-progress");
+    //UI.addScoreHandlers();
+    APP.start();
 }());
