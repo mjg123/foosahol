@@ -15,26 +15,27 @@ var XHR = (function(){
     };
 
     xhr.get = function( url, settings ){
-
         var xhr = this.makeXhr();
-
-        /*
-          abortTimeout = setTimeout(function(){
-          xhr.abort();
-          xhr.onreadystatechange = 0;
-          console.log("timeout");
-          }, 5000);
-        */
 
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function(){
             if ( xhr.readyState === 4 ){
-                //              clearTimeout(abortTimeout);
                 settings.ok( JSON.parse(xhr.responseText), xhr.status );
             }
         };
         xhr.send(null);
 
+    };
+
+    xhr.post = function( url, settings ){
+	var xhr = this.makeXhr();
+	xhr.open("POST", url, true);
+        xhr.onreadystatechange = function(){
+            if ( xhr.readyState === 4 ){
+                settings.ok( JSON.parse(xhr.responseText), xhr.status );
+            }
+        };
+	xhr.send(settings.body);
     };
 
     return xhr;
@@ -62,10 +63,15 @@ var MODEL = (function(){
             }).flatten().uniq().value();
     };
 
+    model.saveResult = function( result ){
+        console.log(result);
+	XHR.post("/results", {ok: console.log, body: JSON.stringify(result)});
+    };
+
     return model;
 }());
 
-var UI = (function(){
+var UI = (function(model){
     'use strict';
     var ui = {},
     d = function(e){return document.getElementById(e);},
@@ -73,6 +79,7 @@ var UI = (function(){
     pages = ['loading-page','choose-players-page'],
 
     chosenPlayers = [],
+    initialComment = d('meta').value,
 
     choosePlayer = function(name){
         if (chosenPlayers.length === 4){
@@ -110,17 +117,36 @@ var UI = (function(){
         playerElem.onclick = function(){
             playerElem.className = "player empty";
             choosePlayer(name);
-            console.log(name);
             playerElem.onclick = null;
         };
         elem.appendChild( playerElem );
     },
 
-    makeOption = function(name){
-        var opt = m('option');
-        opt.value = name;
-        opt.innerHTML = name;
-        return opt;
+    showScore = function(score){
+        d('score').value = score[0] + " / " + score[1];
+        d('score').onclick = function(){
+            model.saveResult(
+                { "team1": {
+                    "colour": "red",
+                    "score": score[0],
+                    "attacker": d('t1a').innerHTML,
+                    "defender": d('t1d').innerHTML },
+                  "team2": {
+                      "colour": "blue",
+                      "score": score[1],
+                      "attacker": d('t2a').innerHTML,
+                      "defender": d('t2d').innerHTML },
+                  "meta": {
+                      "comments" : (d('meta').value === initialComment ? "" : d('meta').value),
+                      "rhino" : d('rhinobox').checked
+                  }
+                }
+            );
+	    d('scoresubmit').style.display = "none";
+	    d('meta').value = initialComment;
+	    d('rhinobox').checked = false;
+        };
+        d('scoresubmit').style.display = "block";
     };
 
     ui.choosePlayers = function(players, cb){
@@ -140,32 +166,42 @@ var UI = (function(){
 
     // Game screen
 
-    ui.addTeamPlayers = function (players) {
-        var players = _(players).shuffle(),
-        count=0;
+    ui.addTeamPlayers = function (inplayers) {
+        var players = _(inplayers).shuffle();
 
-        _(players).each(function(n){
-            d('t1a').appendChild(makeOption(n));
-            d('t1d').appendChild(makeOption(n));
-            d('t2a').appendChild(makeOption(n));
-            d('t2d').appendChild(makeOption(n));
-        });
+        d('t1a').innerHTML = players[0];
+        d('t1d').innerHTML = players[1];
+        d('t2a').innerHTML = players[2];
+        d('t2d').innerHTML = players[3];
 
-        d('t1a').selectedIndex = 0;
-        d('t1d').selectedIndex = 1;
-        d('t2a').selectedIndex = 2;
-        d('t2d').selectedIndex = 3;
+        d('teamshuffle').onclick = function(){
+            ui.addTeamPlayers(players);
+        };
+
     };
 
     ui.addScoreHandlers = function(){
-	_(_.range(10)).chain().each(function(n){
-	    d('t1score'+n).onclick = function(){ console.log([10,n]); };
-	    d('t2score'+n).onclick = function(){ console.log([n,10]); };
-	});
+        d('t1swap').onclick = function(){
+            var tmp = d('t1a').innerHTML;
+            d('t1a').innerHTML = d('t1d').innerHTML;
+            d('t1d').innerHTML = tmp;
+        };
+
+        d('t2swap').onclick = function(){
+            var tmp = d('t2a').innerHTML;
+            d('t2a').innerHTML = d('t2d').innerHTML;
+            d('t2d').innerHTML = tmp;
+        };
+
+        _(_.range(10)).chain().each(function(n){
+            d('t1score'+n).onclick = function(){ showScore([n,10]); };
+            d('t2score'+n).onclick = function(){ showScore([10,n]); };
+        });
+
     };
 
     return ui;
-}());
+}(MODEL));
 
 var APP = (function(model,ui){
     'use strict';
@@ -184,6 +220,7 @@ var APP = (function(model,ui){
 
     app.start = function(){
         ui.showPage("loading-page");
+        ui.addScoreHandlers();
         model.load(modelLoaded);
     };
 
@@ -192,7 +229,6 @@ var APP = (function(model,ui){
 
 (function(){
     'use strict';
-    //UI.showPage("game-in-progress");
-    //UI.addScoreHandlers();
+    //    UI.showPage("game-in-progress");
     APP.start();
 }());

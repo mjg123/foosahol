@@ -34,52 +34,56 @@
     <div class="page" id="game-in-progress">
       <h1>Game Time Bizzatches!</h1>
 
-      <div class="teambar" id="team1bar">
-        <select id="t1a"></select>
-        <input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
-        <select id="t1d"></select>
+      <div class="teambar t1" id="team1bar">
+        <div class="teamplayer" id="t1a">t1a</div>
+        <div class="team-swap" id="t1swap">&#x21C4;</div>
+        <div class="teamplayer" id="t1d">t1d</div>
       </div>
 
-      <div id="table">
-
-        <div class="score-counter">
-          <input class="scorer" type="button" id="t1score0" value="0"/>
-          <input class="scorer" type="button" id="t1score1" value="1"/>
-          <input class="scorer" type="button" id="t1score2" value="2"/>
-          <input class="scorer" type="button" id="t1score3" value="3"/>
-          <input class="scorer" type="button" id="t1score4" value="4"/>
-          <input class="scorer" type="button" id="t1score5" value="5"/>
-          <input class="scorer" type="button" id="t1score6" value="6"/>
-          <input class="scorer" type="button" id="t1score7" value="7"/>
-          <input class="scorer" type="button" id="t1score8" value="8"/>
-          <input class="scorer" type="button" id="t1score9" value="9"/>
-        </div>
-
-        <div id="pitch">
-          <img id="tableimg" src="img/pitch.png"/>
-        </div>
-
-        <div class="score-counter">
-          <input class="scorer" type="button" id="t2score0" value="0"/>
-          <input class="scorer" type="button" id="t2score1" value="1"/>
-          <input class="scorer" type="button" id="t2score2" value="2"/>
-          <input class="scorer" type="button" id="t2score3" value="3"/>
-          <input class="scorer" type="button" id="t2score4" value="4"/>
-          <input class="scorer" type="button" id="t2score5" value="5"/>
-          <input class="scorer" type="button" id="t2score6" value="6"/>
-          <input class="scorer" type="button" id="t2score7" value="7"/>
-          <input class="scorer" type="button" id="t2score8" value="8"/>
-          <input class="scorer" type="button" id="t2score9" value="9"/>
-        </div>
-
-	<div style="clear:both;"></div>
-
+      <div class="score-counter-left t1">
+        <input class="scorer t1" type="button" id="t1score0" value="0"/>
+        <input class="scorer t1" type="button" id="t1score1" value="1"/>
+        <input class="scorer t1" type="button" id="t1score2" value="2"/>
+        <input class="scorer t1" type="button" id="t1score3" value="3"/>
+        <input class="scorer t1" type="button" id="t1score4" value="4"/>
+        <input class="scorer t1" type="button" id="t1score5" value="5"/>
+        <input class="scorer t1" type="button" id="t1score6" value="6"/>
+        <input class="scorer t1" type="button" id="t1score7" value="7"/>
+        <input class="scorer t1" type="button" id="t1score8" value="8"/>
+        <input class="scorer t1" type="button" id="t1score9" value="9"/>
       </div>
 
-      <div class="teambar" id="team2bar">
-        <select id="t2d"></select>
-        <input class="team-swap" type="button" id="t1swap" value="&#x21C4;"/>
-        <select id="t2a"></select>
+      <img id="tableimg" src="img/pitch.png"/>
+
+      <div class="score-counter-right t2">
+        <input class="scorer t2" type="button" id="t2score9" value="9"/>
+        <input class="scorer t2" type="button" id="t2score8" value="8"/>
+        <input class="scorer t2" type="button" id="t2score7" value="7"/>
+        <input class="scorer t2" type="button" id="t2score6" value="6"/>
+        <input class="scorer t2" type="button" id="t2score5" value="5"/>
+        <input class="scorer t2" type="button" id="t2score4" value="4"/>
+        <input class="scorer t2" type="button" id="t2score3" value="3"/>
+        <input class="scorer t2" type="button" id="t2score2" value="2"/>
+        <input class="scorer t2" type="button" id="t2score1" value="1"/>
+        <input class="scorer t2" type="button" id="t2score0" value="0"/>
+      </div>
+
+      <div class="teambar t2" id="team2bar">
+        <div class="teamplayer" id="t2d">t2d</div>
+        <div class="team-swap" id="t2swap">&#x21C4;</div>
+        <div class="teamplayer" id="t2a">t2a</div>
+      </div>
+
+      <div id="teamshuffle"><div>&#x21BA;</div></div>
+
+      <div id="scoresubmit">
+        <input id="score" value="-- / --" type="button"/>
+        <textarea id="meta">comments?</textarea>
+        <div id="rhino">
+          <label for="rhinobox">rhino</label>
+          <input type="checkbox" id="rhinobox"/>
+        </div>
+
       </div>
 
     </div>
