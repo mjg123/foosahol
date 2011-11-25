@@ -55,7 +55,7 @@ var FOOS = (function(){
     'use strict';
 
     var foos={}, state=STATE.init(),
-    players = ["Tranny", "Pross", "Beard", "Pop3"],
+    players = ["A4J", "Pross", "Beard", "Pop3"],
     colours = ["red", "blue", "yellow", "black"],
 
     d = function(e){return document.getElementById(e);},
