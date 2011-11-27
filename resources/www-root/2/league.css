@@ -18,4 +18,5 @@ h2 {
 .statitem {
    float:left;
    text-align: center;
+   margin-right: 2em;
 }
