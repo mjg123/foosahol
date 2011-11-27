@@ -170,7 +170,7 @@ var UI = (function(league, dom){
 
     ui.showTable = function(){
         _(league.getPeople()).chain().sortBy( function(p){ return -p.WR; } ).each(function(person){
-            var row = m('tr', {onclick: (function(){ return function(){ui.showPlayer(person);}; }())});
+            var row = m('tr', {onclick: (function(){ return function(){ui.showPlayer(person);}; }()), className:"leaguerow"});
             row.appendChild( m('td', {innerHTML: person.name}) );
             row.appendChild( m('td', {innerHTML: person.P}) );
             row.appendChild( m('td', {innerHTML: person.W}) );

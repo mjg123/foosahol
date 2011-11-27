@@ -1,3 +1,12 @@
+
+h2 {
+   border-bottom: 1px solid #888;
+}
+
+.leaguerow {
+   cursor: pointer;
+}
+
 .stat {
    font-style: italic;
 }
