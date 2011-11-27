@@ -55,14 +55,33 @@ var LEAGUE = (function(){
 
     addBadges = function( players ){
 
-        var maxP = _(players).pluck('P').reduce( function(m,n){ return Math.max(m,n); } );
+        var maxP = _(players).chain().pluck('P').max().value();
         _(players).chain().keys().filter( function(k){ return players[k].P === maxP; })
             .each( function(p){ players[p].badges.push("KEENER"); });
 
-        var minP = _(players).pluck('P').reduce( function(m,n){ return Math.min(m,n); } );
+        var minP = _(players).chain().pluck('P').min().value();
         _(players).chain().keys().filter( function(k){ return players[k].P === minP; })
             .each( function(p){ players[p].badges.push("SLACKER"); });
 
+	var WRorder = _(players).chain().sortBy( function(p){ return -p.hist.WR.slice(-1)[0]; } ).pluck('name').value();
+	players[WRorder[0]].badges.push("GOLD MEDAL");
+	players[WRorder[1]].badges.push("SILVER MEDAL");
+	players[WRorder.slice(-1)[0]].badges.push("WOODEN SPOON");
+
+
+	_(players).each( function(p){
+	    if (p.P < 10) { p.badges.push( "NEWB" ); }
+
+	    if (p.P >= 10) { p.badges.push( "DECENARIAN" ); }
+	    if (p.W >= 10) { p.badges.push( "DEC+" ); }
+	    if (p.L >= 10) { p.badges.push( "DEC-" ); }
+
+	    if (p.P >= 100) { p.badges.push( "CENTURION" ); }
+	    if (p.W >= 100) { p.badges.push( "CENT+" ); }
+	    if (p.L >= 100) { p.badges.push( "CENT-" ); }
+
+	});
+	
 
     };
 
@@ -146,6 +165,21 @@ var LEAGUE = (function(){
         return players;
     };
 
+    league.badges = {
+	"KEENER": "Played the most games",
+	"SLACKER": "Played the least games",
+	"GOLD MEDAL": "Highest win rate",
+	"SILVER MEDAL": "Second-highest win rate",
+	"WOODEN SPOON": "Worst win rate",
+	"NEWB": "Less than ten games",
+	"DECENARIAN": "10+ games under your belt",
+	"DEC+": "10+ games won",
+	"DEC-": "10+ games lost",
+	"CENTURION": "100+ games tucked away",
+	"CENT+": "100+ games won",
+	"CENT-": "100+ games lost",
+    };
+
     return league;
 
 }());
@@ -205,7 +239,9 @@ var UI = (function(league, dom){
         });
 
         dom.removeChildren(d('badgesbox'));
-        _(player.badges).each( function(b){ d('badgesbox').appendChild(m('span',{innerHTML:b})); } );
+        _(player.badges).each( function(b){ 
+	    d('badgesbox').appendChild(m('span',{innerHTML:b, title:league.badges[b], className: "badge"})); 
+	});
 
     };
 
