@@ -1,35 +1,48 @@
 <html>
   <head>
     <title>foos league</title>
+    <style type="text/css">
+      .stat {font-style: italic;}
+    </style>
   </head>
   <body>
-    <h1>foostat</h1>
+    <h1>foo<span class="stat">stat</span></h1>
 
     <div>
-      <h2>league</h2>
+      <h2>league<span class="stat">stat</span></h2>
       <table id="leaguetable">
-	<tr>
-	  <th>name</th>
-	  <th>Played</th>
-	  <th>Won</th>
-	  <th>Lost</th>
-	  <th>Win Rate %</th>
-	  <th>Loss Rate %</th>
-	  <th>Goals For</th>
-	  <th>Goals Against</th>
-	  <th>Goals Difference Per Game</th>
-	  <th>Debug</th>
-	</tr>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Played</th>
+          <th>Won</th>
+          <th>Lost</th>
+          <th>Win Rate %</th>
+          <th>Goals For</th>
+          <th>Goals Against</th>
+          <th>Goals Difference Per Game</th>
+        </tr>
       </table>
     </div>
 
     <div>
-      <h2>player</h2>
-      
+      <h2><span id="p-name">player</span><span class="stat">stat</span></h2>
+      <div>
+	<ul>
+	  <li><span title="max( games_including( x ) )">BFF</span>: <span id="p-bff">&#8275;</span>
+	  <li><span title="min( games_including( x ) )">Enemy</span>: <span id="p-enemy">&#8275;</span>
+	  <li><span title="max( team_including( x ) )">Sidekick</span>: <span id="p-sidekick">&#8275;</span>
+	  <li><span title="min( team_including( x ) )">Rival</span>: <span id="p-rival">&#8275;</span>
+	  <li><span title="max( wins_against( x ) )">Whipping Boy</span>: <span id="p-whippingboy">&#8275;</span>
+	  <li><span title="max( beaten_by( x ) )">Nemesis</span>: <span id="p-nemesis">&#8275;</span>
+	  <li><span title="max( team_including( x ) && win )">Partner</span>: <span id="p-partner">&#8275;</span>
+	  <li><span title="min( team_including( x ) && win )">Mismatch</span>: <span id="p-mismatch">&#8275;</span>
+	</ul>
+      </div>
     </div>
 
     <script type="text/javascript" src="js/lib/underscore-min.js"></script>
     <script type="text/javascript" src="js/lib/xhr.js"></script>
+    <script type="text/javascript" src="js/lib/dom.js"></script>
     <script type="text/javascript" src="js/league.js"></script>
   </body>
 </html>

@@ -7,39 +7,50 @@ var LEAGUE = (function(){
     data = {},
 
     isTeam1 = function(n,g){
-	return g.team1.attacker === n || g.team1.defender === n;
+        return g.team1.attacker === n || g.team1.defender === n;
     },
 
     isTeam2 = function(n,g){
-	return g.team2.attacker === n || g.team2.defender === n;
+        return g.team2.attacker === n || g.team2.defender === n;
     },
 
     played = function(n,g){
-	return isTeam1(n,g) || isTeam2(n,g);
+        return isTeam1(n,g) || isTeam2(n,g);
     },
 
     won = function(n,g){
-	if (isTeam1(n,g)) { return g.team1.score === 10; }
-	if (isTeam2(n,g)) { return g.team2.score === 10; }
-	return false;
+        if (isTeam1(n,g)) { return g.team1.score === 10; }
+        if (isTeam2(n,g)) { return g.team2.score === 10; }
+        return false;
     },
 
     lost = function(n,g){
-	if (isTeam1(n,g)) { return g.team1.score !== 10; }
-	if (isTeam2(n,g)) { return g.team2.score !== 10; }
-	return false;
+        if (isTeam1(n,g)) { return g.team1.score !== 10; }
+        if (isTeam2(n,g)) { return g.team2.score !== 10; }
+        return false;
     },
 
     goalsFor = function(n,g){
-	if (isTeam1(n,g)) { return g.team1.score; }
-	if (isTeam2(n,g)) { return g.team2.score; }
-	return 0;
+        if (isTeam1(n,g)) { return g.team1.score; }
+        if (isTeam2(n,g)) { return g.team2.score; }
+        return 0;
     },
 
     goalsAgainst = function(n,g){
-	if (isTeam1(n,g)) { return g.team2.score; }
-	if (isTeam2(n,g)) { return g.team1.score; }
-	return 0;
+        if (isTeam1(n,g)) { return g.team2.score; }
+        if (isTeam2(n,g)) { return g.team1.score; }
+        return 0;
+    },
+
+    oppositeTeams = function(n1,n2,g){
+	if ( isTeam1(n1,g) && isTeam2(n2,g) ){ return true; }
+	if ( isTeam2(n1,g) && isTeam1(n2,g) ){ return true; }
+	return false;
+    },
+
+    getTeamPeople = function(p,val){
+	var max = _(p.team).pluck(val).reduce( function(m,n){ return Math.max(m,n); }, 0 );
+	return _(p.team).keys().filter( function(k){ return p.team[k][val] === max; });
     };
 
     league.setData = function(_data){
@@ -54,27 +65,64 @@ var LEAGUE = (function(){
         players = {};
 
         _(names).each( function(n) {
-            var r = { P:0,W:0,L:0,GF:0,GA:0,GDPG:0,form:[] };
+            var r = { P:0,W:0,L:0,GF:0,GA:0,GDPG:0,form:[],WRhist:[],team:{} };
             r.name = n;
 
             _(data.results).chain().sortBy( function(g){ return g.meta.timestamp; } ).each( function(g){
-		if ( played(n,g) ){
+                if ( played(n,g) ){
                     r.P += 1;
-		    r.GF += goalsFor(n,g);
-		    r.GA += goalsAgainst(n,g);
-		    if ( won(n,g) ){ r.W++; r.form.push('W'); }
-		    if ( lost(n,g) ){ r.L++; r.form.push('L'); }
-		}
+                    r.GF += goalsFor(n,g);
+                    r.GA += goalsAgainst(n,g);
+                    if ( won(n,g) ){ r.W++; r.form.push('W'); }
+                    if ( lost(n,g) ){ r.L++; r.form.push('L'); }
+                    r.WRhist.push( Math.ceil( r.W*100 / r.P ) );
 
+                    _(names).chain().reject( function(on){ return n===on; } ).each(function(on){
+                        r.team[on] = r.team[on] || { bff:0,enemy:0,rival:0,sidekick:0,whippingboy:0,nemesis:0,partner:0,mismatch:0 };
+                        if (played(on,g)){
+                            r.team[on].bff += 1;
+			    if ( oppositeTeams(n,on,g) ){
+				r.team[on].rival += 1;
+				if ( won(n,g) ){
+				    r.team[on].whippingboy += 1;
+				} else {
+				    r.team[on].nemesis += 1;
+				}
+			    } else {
+				r.team[on].sidekick += 1;
+				if ( won(n,g) ){
+				    r.team[on].partner += 1;
+				} else {
+				    r.team[on].mismatch += 1;
+				}
+			    }
+                        } else {
+			    r.team[on].enemy += 1;
+			}
+
+                    });
+                }
             });
 
-	    if ( r.P > 0 ){
-		r.WR = r.W*100 / r.P;
-		r.LR = r.L*100 / r.P;
-		r.GDPG = (r.GF - r.GA) / r.P;
-	    }
+	    // some stats only count when both players were present
+	    _(names).chain().reject( function(on){ return n===on; } ).each( function(on){
+		r.team[on].whippingboy /= r.team[on].bff;
+		r.team[on].nemesis     /= r.team[on].bff;
+		r.team[on].partner     /= r.team[on].bff;
+		r.team[on].mismatch    /= r.team[on].bff;
+	    });
 
-	    players[n] = r;
+            if ( r.P > 0 ){
+                r.WR = r.W*100 / r.P;
+                r.LR = r.L*100 / r.P;
+                r.GDPG = (r.GF - r.GA) / r.P;
+
+		_([ "bff", "enemy", "rival", "sidekick", "whippingboy", "nemesis", "partner", "mismatch" ]).each( function(s){
+		    r[s] = getTeamPeople(r,s);
+		});
+            }
+
+            players[n] = r;
         });
 
         return players;
@@ -84,41 +132,51 @@ var LEAGUE = (function(){
 
 }());
 
-var UI = (function(league){
+var UI = (function(league, dom){
     'use strict';
 
     var ui = {},
-    d = function(i){ return document.getElementById(i); },
-    m = function(tag,c){ 
-	var elem = document.createElement(tag);
-	if (c){
-	    _(c).chain().keys().each( function(key){
-		elem[key] = c[key];
-	    });
-	}
-	return elem;
+    m=dom.m, d=dom.d,
+    spark = function( data ){
+        return "https://chart.googleapis.com/chart?chs=100x30"+
+            "&cht=lc"+
+            "&chco=336699" +
+            "&chls=1,1,0" +
+            "&chxl=0:|"+data[data.length-1]+"|1:||2:||" +
+            "&chxp=0,"+data[data.length-1] +
+            "&chxt=r,x,y" +
+            "&chxs=0,990000,11,0,_|1,990000,1,0,_|2,990000,1,0,_" +
+            "&chm=o,990000,0,"+data.length+",4"+
+            "&chd=t:"+data.join();
     };
 
     ui.showTable = function(){
-        console.log("OK");
         _(league.getPeople()).chain().sortBy( function(p){ return -p.WR; } ).each(function(person){
-	    var row = m('tr', {onclick: (function(){ return function(){alert(person.name);}; }())});	    
-	    row.appendChild( m('td', {innerHTML: person.name}) );
-	    row.appendChild( m('td', {innerHTML: person.P}) );
-	    row.appendChild( m('td', {innerHTML: person.W}) );
-	    row.appendChild( m('td', {innerHTML: person.L}) );
-	    row.appendChild( m('td', {innerHTML: person.WR}) );
-	    row.appendChild( m('td', {innerHTML: person.LR}) );
-	    row.appendChild( m('td', {innerHTML: person.GF}) );
-	    row.appendChild( m('td', {innerHTML: person.GA}) );
-	    row.appendChild( m('td', {innerHTML: person.GDPG}) );
-	    row.appendChild( m('td', {innerHTML: JSON.stringify(person)}) );
-	    d('leaguetable').appendChild(row);
+            var row = m('tr', {onclick: (function(){ return function(){ui.showPlayer(person);}; }())});
+            row.appendChild( m('td', {innerHTML: person.name}) );
+            row.appendChild( m('td', {innerHTML: person.P}) );
+            row.appendChild( m('td', {innerHTML: person.W}) );
+            row.appendChild( m('td', {innerHTML: person.L}) );
+            row.appendChild( m('td', { children: [m('img', {src: spark(person.WRhist), alt: person.WR.toFixed(0)})] }));
+            row.appendChild( m('td', {innerHTML: person.GF}) );
+            row.appendChild( m('td', {innerHTML: person.GA}) );
+            row.appendChild( m('td', {innerHTML: person.GDPG.toFixed(2)}) );
+            d('leaguetable').appendChild(row);
         });
     };
 
+    ui.showPlayer = function(player){
+        console.log(player);
+        d('p-name').innerHTML = player.name;
+
+	_([ "bff", "enemy", "rival", "sidekick", "whippingboy", "nemesis", "partner", "mismatch" ]).each( function(s){
+	    d('p-'+s).innerHTML = player[s].join("/");	    
+	});
+
+    };
+
     return ui;
-}(LEAGUE));
+}(LEAGUE, DOM));
 
 
 (function(xhr,league,ui){
