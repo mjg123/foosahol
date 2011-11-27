@@ -21,6 +21,10 @@ var DOM = (function(){
 	return elem;
     };
 
+    dom.removeChildren = function(e){
+	while (e.hasChildNodes()){ e.removeChild(e.firstChild); }
+    };
+
     return dom;
 }());
 

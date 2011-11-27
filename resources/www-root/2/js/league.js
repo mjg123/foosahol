@@ -51,6 +51,18 @@ var LEAGUE = (function(){
     getTeamPeople = function(p,val){
 	var max = _(p.team).pluck(val).reduce( function(m,n){ return Math.max(m,n); }, 0 );
 	return _(p.team).keys().filter( function(k){ return p.team[k][val] === max; });
+    },
+
+    addBadges = function( players ){
+
+	var mx = _(players).pluck('P').reduce( function(m,n){ return Math.max(m,n); } );
+	_(players).chain().keys().filter( function(k){ return players[k].P === mx; })
+	    .each( function(p){ 
+		console.log(players[p]);
+		players[p].badges.push("KEENER");
+	    } );
+
+
     };
 
     league.setData = function(_data){
@@ -65,7 +77,7 @@ var LEAGUE = (function(){
         players = {};
 
         _(names).each( function(n) {
-            var r = { P:0,W:0,L:0,GF:0,GA:0,GDPG:0,form:[],WRhist:[],team:{} };
+            var r = { P:0,W:0,L:0,GF:0,GA:0,GDPG:0,form:[],team:{},badges:[],hist:{W:[],L:[],WR:[]} };
             r.name = n;
 
             _(data.results).chain().sortBy( function(g){ return g.meta.timestamp; } ).each( function(g){
@@ -75,7 +87,10 @@ var LEAGUE = (function(){
                     r.GA += goalsAgainst(n,g);
                     if ( won(n,g) ){ r.W++; r.form.push('W'); }
                     if ( lost(n,g) ){ r.L++; r.form.push('L'); }
-                    r.WRhist.push( Math.ceil( r.W*100 / r.P ) );
+
+                    r.hist.WR.push( Math.ceil( r.W*100 / r.P ) );
+		    r.hist.W.push( r.W );
+		    r.hist.L.push( r.L );
 
                     _(names).chain().reject( function(on){ return n===on; } ).each(function(on){
                         r.team[on] = r.team[on] || { bff:0,enemy:0,rival:0,sidekick:0,whippingboy:0,nemesis:0,partner:0,mismatch:0 };
@@ -125,6 +140,8 @@ var LEAGUE = (function(){
             players[n] = r;
         });
 
+	addBadges(players);
+	
         return players;
     };
 
@@ -157,7 +174,7 @@ var UI = (function(league, dom){
             row.appendChild( m('td', {innerHTML: person.P}) );
             row.appendChild( m('td', {innerHTML: person.W}) );
             row.appendChild( m('td', {innerHTML: person.L}) );
-            row.appendChild( m('td', { children: [m('img', {src: spark(person.WRhist), alt: person.WR.toFixed(0)})] }));
+            row.appendChild( m('td', { children: [m('img', {src: spark(person.hist.WR), alt: person.WR.toFixed(0)})] }));
             row.appendChild( m('td', {innerHTML: person.GF}) );
             row.appendChild( m('td', {innerHTML: person.GA}) );
             row.appendChild( m('td', {innerHTML: person.GDPG.toFixed(2)}) );
@@ -169,9 +186,24 @@ var UI = (function(league, dom){
         console.log(player);
         d('p-name').innerHTML = player.name;
 
+	var prev = Math.max(player.P-6,0),
+	makeHist = function(v,old){
+	    return m('div',{children:[m('span',{innerHTML:v}), m('span',{innerHTML:"("+old+")"})]});
+	};
+
+	d('p-played').innerHTML = player.P;
+	d('p-won').innerHTML = player.W;
+	d('p-lost').innerHTML = player.L;
+
+	d('p-form').innerHTML = player.form.slice(-5).join("");
+
+
 	_([ "bff", "enemy", "rival", "sidekick", "whippingboy", "nemesis", "partner", "mismatch" ]).each( function(s){
 	    d('p-'+s).innerHTML = player[s].join("/");	    
 	});
+
+	dom.removeChildren(d('badgesbox'));
+	_(player.badges).each( function(b){ d('badgesbox').appendChild(m('span',{innerHTML:b})); } );
 
     };
 

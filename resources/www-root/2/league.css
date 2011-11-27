@@ -1,0 +1,12 @@
+.stat {
+   font-style: italic;
+}
+
+.statbox {
+   float:left;
+}
+
+.statitem {
+   float:left;
+   text-align: center;
+}
