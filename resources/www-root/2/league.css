@@ -1,6 +1,7 @@
 
 body {
    padding: 8px;
+   cursor: default;
 }
 
 h1 {
@@ -49,12 +50,14 @@ ul li {
 }
 
 .statbox {
-   float:left;
+   float: left;
+   max-width: 33%;
 }
 
 .statrow {
    margin-bottom: 1em;
    border-top: 1px solid #EEE;
+   width: 100%;
 }
 
 .statitem {
@@ -68,10 +71,12 @@ ul li {
 }
 
 .badge {
-   margin: 1px 4px;
-   padding: 1px 4px;
+   margin: 4px 4px;
+   padding: 4px 8px;
    border: 1px solid #888;
    cursor: help;
+   display: inline-block;
+   background-color: #F8F8F8;
 }
 
 table#leaguetable {

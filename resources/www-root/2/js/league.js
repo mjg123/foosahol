@@ -76,7 +76,7 @@ var LEAGUE = (function(){
 	});
     },
 
-    addBadges = function( players ){
+    addBadges = function( players, games ){
 
         var maxP = _(players).chain().pluck('P').max().value();
         _(players).chain().keys().filter( function(k){ return players[k].P === maxP; })
@@ -108,7 +108,27 @@ var LEAGUE = (function(){
 	    var curr = p.hist.WR.length-1;
 	    var prev = Math.max(p.hist.WR.length-6,0);
 	    p.improvement = p.hist.WR[curr] / p.hist.WR[prev];
+
+	    p.brink = { P:0,W:0,L:0 };
+	    _(games).each( function(g){
+		var totalScore = g.team1.score + g.team2.score;
+		if ( totalScore === 10 && won(p.name,g)  ){ p.badges.push("UNICORN"); }
+		if ( totalScore === 10 && lost(p.name,g) ){ p.badges.push("UNICORNED"); }
+		if ( totalScore === 11 && lost(p.name,g) ){ p.badges.push("PHEW!"); }
+		if ( totalScore === 19 && won(p.name,g)  ){ p.brink.P += 1; p.brink.W += 1; }
+		if ( totalScore === 19 && lost(p.name,g) ){ p.brink.P += 1; p.brink.L += 1; }
+	    });
+	    
+	    if ( p.brink.P > 0 ){
+		if ( p.brink.W > p.brink.L ){ p.badges.push( "STEADY NERVE" ); }
+		if ( p.brink.W < p.brink.L ){ p.badges.push( "CRUMBLES" ); }
+	    }
+
 	});
+
+        var maxBrink = _(players).chain().map(function(p){ return p.brink.P; }).max().value();
+        _(players).chain().keys().filter( function(k){ return players[k].brink.P === maxBrink; })
+            .each( function(p){ players[p].badges.push("BRINKSMAN"); });
 
         var maxImpr = _(players).chain().pluck('improvement').max().value();
         _(players).chain().keys().filter( function(k){ return players[k].improvement === maxImpr; })
@@ -118,7 +138,7 @@ var LEAGUE = (function(){
         _(players).chain().keys().filter( function(k){ return players[k].improvement === minImpr; })
             .each( function(p){ players[p].badges.push("COLLAPSING"); });
 
-	
+
     };
 
     league.setData = function(_data){
@@ -197,7 +217,7 @@ var LEAGUE = (function(){
         });
 
 	addStreaks(players);
-        addBadges(players);
+        addBadges(players, data.results);
 
         return players;
     };
@@ -219,6 +239,12 @@ var LEAGUE = (function(){
 	"LOSING!": "Currently on worst streak",
 	"IMPROVING": "Best improvement in Win Rate since 5 games ago",
 	"COLLAPSING": "Biggest drop in Win Rate since 5 games ago",
+	"UNICORN": "The ULTIMATE result.  10-0.  Enough said.",
+	"UNICORNED": "The ULTIMATE humiliation.",
+	"PHEW!": "Jesus! That was close!  You almost got unicorned! (beaten 10-1)",
+	"STEADY NERVE": "Wins >50% of golden-goal games",
+	"CRUMBLES": "Loses >50% of golden-goal games",
+	"BRINKSMAN": "Takes it to golden-goal more than anyone else",
     };
 
     return league;
