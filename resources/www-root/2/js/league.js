@@ -53,6 +53,29 @@ var LEAGUE = (function(){
         return _(p.team).keys().filter( function(k){ return p.team[k][val] === max; });
     },
 
+    addStreaks = function(players){
+	_(players).each( function(p){
+
+	    var b=0,w=0,c=0, grouped=[],currentGroup=[];
+
+	    _(p.form).each( function( res ){
+		if ( currentGroup.length ===0 || currentGroup[0] === res ){
+		    currentGroup.push(res);
+		} else {
+		    grouped.push(currentGroup);
+		    currentGroup = [res];
+		}
+	    });
+	    grouped.push(currentGroup);
+
+	    p.streak = {};
+	    p.streak.best = _(grouped).chain().filter( function(g){return g[0]==="W";} ).map( function(g){ return g.length; } ).max().value();
+	    p.streak.worst = _(grouped).chain().filter( function(g){return g[0]==="L";} ).map( function(g){ return g.length; } ).max().value() * -1;
+	    p.streak.current = grouped.slice(-1)[0].length * ( grouped.slice(-1)[0][0] === "W" ? 1 : -1 );
+
+	});
+    },
+
     addBadges = function( players ){
 
         var maxP = _(players).chain().pluck('P').max().value();
@@ -68,7 +91,6 @@ var LEAGUE = (function(){
 	players[WRorder[1]].badges.push("SILVER MEDAL");
 	players[WRorder.slice(-1)[0]].badges.push("WOODEN SPOON");
 
-
 	_(players).each( function(p){
 	    if (p.P < 10) { p.badges.push( "NEWB" ); }
 
@@ -80,9 +102,23 @@ var LEAGUE = (function(){
 	    if (p.W >= 100) { p.badges.push( "CENT+" ); }
 	    if (p.L >= 100) { p.badges.push( "CENT-" ); }
 
-	});
-	
+	    if (p.streak.best  === p.streak.current){ p.badges.push( "WINNING!" ); }
+	    if (p.streak.worst === p.streak.current){ p.badges.push( "LOSING!" ); }
 
+	    var curr = p.hist.WR.length-1;
+	    var prev = Math.max(p.hist.WR.length-6,0);
+	    p.improvement = p.hist.WR[curr] / p.hist.WR[prev];
+	});
+
+        var maxImpr = _(players).chain().pluck('improvement').max().value();
+        _(players).chain().keys().filter( function(k){ return players[k].improvement === maxImpr; })
+            .each( function(p){ players[p].badges.push("IMPROVING"); });
+
+        var minImpr = _(players).chain().pluck('improvement').min().value();
+        _(players).chain().keys().filter( function(k){ return players[k].improvement === minImpr; })
+            .each( function(p){ players[p].badges.push("COLLAPSING"); });
+
+	
     };
 
     league.setData = function(_data){
@@ -160,6 +196,7 @@ var LEAGUE = (function(){
             players[n] = r;
         });
 
+	addStreaks(players);
         addBadges(players);
 
         return players;
@@ -178,6 +215,10 @@ var LEAGUE = (function(){
 	"CENTURION": "100+ games tucked away",
 	"CENT+": "100+ games won",
 	"CENT-": "100+ games lost",
+	"WINNING!": "Currently on best streak",
+	"LOSING!": "Currently on worst streak",
+	"IMPROVING": "Best improvement in Win Rate since 5 games ago",
+	"COLLAPSING": "Biggest drop in Win Rate since 5 games ago",
     };
 
     return league;
@@ -233,6 +274,9 @@ var UI = (function(league, dom){
 
         d('p-form').innerHTML = player.form.slice(-5).join("");
 
+	d('p-best-streak').innerHTML = player.streak.best;
+	d('p-worst-streak').innerHTML = player.streak.worst;
+	d('p-current-streak').innerHTML = player.streak.current;
 
         _([ "bff", "enemy", "rival", "sidekick", "whippingboy", "nemesis", "partner", "mismatch" ]).each( function(s){
             d('p-'+s).innerHTML = player[s].join("/");

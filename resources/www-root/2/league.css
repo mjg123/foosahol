@@ -1,6 +1,43 @@
 
+body {
+   padding: 8px;
+}
+
+h1 {
+   font-weight: normal;
+   font-size: 200%;
+}
+
 h2 {
    border-bottom: 1px solid #888;
+   padding-bottom: 0.25em;
+   margin-top: 1em;
+   margin-bottom: 1em;
+   font-size: 150%;
+}
+
+h3 {
+   font-size: 130%;
+   padding-bottom: 0.5em;
+}
+
+h4 {
+   font-size: 120%;
+   margin-top: 0.25em;
+   margin-bottom: 0.25em;
+}
+
+h5 {
+   font-size: 110%;
+}
+
+th {
+   font-style: italic;
+   padding-bottom: 0.25em;
+}
+
+ul li {
+   padding: 0.25em 1em;
 }
 
 .leaguerow {
@@ -15,16 +52,26 @@ h2 {
    float:left;
 }
 
+.statrow {
+   margin-bottom: 1em;
+   border-top: 1px solid #EEE;
+}
+
 .statitem {
-   float:left;
+   display: inline-block;
    text-align: center;
    margin-right: 2em;
+}
+
+.teamstat {
+   cursor: help;
 }
 
 .badge {
    margin: 1px 4px;
    padding: 1px 4px;
    border: 1px solid #888;
+   cursor: help;
 }
 
 table#leaguetable {
@@ -35,4 +82,8 @@ table#leaguetable td,th {
    padding-left: 8px;
    padding-right: 8px;
    border-left: 1px solid #EEE;
+}
+
+.dbg {
+   border: 1px solid teal;
 }
