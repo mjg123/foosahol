@@ -123,7 +123,7 @@ var UI = (function(model){
     },
 
     showScore = function(score){
-        d('score').value = score[0] + " / " + score[1];
+        d('score').innerHTML = "<span style=\"color:blue\">" + score[1] + "</span> / <span style=\"color:red\">" + score[0] + "</span>";
         d('score').onclick = function(){
             model.saveResult(
                 { "team1": {

@@ -2,8 +2,7 @@ html,body {
    height: 100%;
    margin: 0;
    padding: 0;
-/*    overflow: hidden;
-*/    background-color: #EEE;
+   background-color: #EEE;
 }
 
 div.page {
@@ -158,11 +157,12 @@ div#scoresubmit textarea {
    width: 100%;
 }
 
-input#score {
+#score {
    width: 100%;
    font-size: 400%;
    border: none;
    height: 25%;
+   cursor: pointer;
 }
 
 #rhino {

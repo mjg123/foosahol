@@ -345,9 +345,9 @@ var UI = (function (league, dom) {
         _(player.badges).each(function (b) { 
             d('badgesbox').appendChild(m('span', {innerHTML: b, title: league.badges[b], className: "badge"})); 
         });
-
+	
     };
-
+    
     return ui;
 }(LEAGUE, DOM));
 
