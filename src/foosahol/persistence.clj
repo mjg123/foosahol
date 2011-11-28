@@ -12,7 +12,7 @@
         (zipmap [:match :user :pass :host :port :db] (re-groups matcher))))))
 
 (comment
-  "export MONGOHQ_URL mongodb://foos:foos@localhost:27017/foos")
+  "export MONGOHQ_URL=mongodb://foos:foos@localhost:27017/app1793512")
 
 ;; TODO: use protocols!
 
