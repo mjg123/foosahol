@@ -89,6 +89,16 @@ table#leaguetable td,th {
    border-left: 1px solid #EEE;
 }
 
+.form-win {
+    color: #080;
+    margin-right: 1px;
+}
+
+.form-loss {
+    color: #800;
+    margin-right: 1px;
+}
+
 .dbg {
    border: 1px solid teal;
 }

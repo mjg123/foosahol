@@ -5,7 +5,7 @@ var LEAGUE = (function () {
     'use strict';
 
     var league = {},
-        data = {}, // TODO: don't store this!
+        data = {},
 
         isTeam1 = function (n, g) {
             return g.team1.attacker === n || g.team1.defender === n;
@@ -94,7 +94,6 @@ var LEAGUE = (function () {
                 maxImpr,
                 minImpr;
 
-
             _(players).chain().keys().filter(function (k) { return players[k].P === maxP; })
                 .each(function (p) { players[p].badges.push("KEENER"); });
 
@@ -134,6 +133,8 @@ var LEAGUE = (function () {
                     if (totalScore === 11 && lost(p.name, g)) { p.badges.push("PHEW!"); }
                     if (totalScore === 19 && won(p.name, g)) { p.brink.P += 1; p.brink.W += 1; }
                     if (totalScore === 19 && lost(p.name, g)) { p.brink.P += 1; p.brink.L += 1; }
+                    if (g.meta.rhino && won(p.name, g)) { p.badges.push("RHINO!"); }
+                    if (g.meta.rhino && lost(p.name, g)) { p.badges.push("RHINOED!"); }
                 });
 	    
                 if (p.brink.P > 0) {
@@ -158,7 +159,6 @@ var LEAGUE = (function () {
 
         };
 
-    // TODO: Delete the grap out of this!
     league.setData = function (_data) {
         data = _data;
     };
@@ -273,6 +273,8 @@ var LEAGUE = (function () {
         "STEADY NERVE": "Wins >50% of golden-goal games",
         "CRUMBLES": "Loses >50% of golden-goal games",
         "BRINKSMAN": "Takes it to golden-goal more than anyone else",
+        "RHINO!": "Ten goals in a row.  Pretty damn special if you ask me",
+        "RHINOED!": "Doh the huge manatee - you got panned!",
     };
 
     return league;
@@ -324,13 +326,17 @@ var UI = (function (league, dom) {
         var prev = Math.max(player.P - 6, 0),
             makeHist = function (v, old) {
                 return m('div', {children: [m('span', {innerHTML: v}), m('span', {innerHTML: "(" + old + ")"})]});
-            };
+            },
+            formWin = "<span class=\"form-win\">&#x2580;</span>",
+            formLoss = "<span class=\"form-loss\">&#x2584;</span>";
 
         d('p-played').innerHTML = player.P;
         d('p-won').innerHTML = player.W;
         d('p-lost').innerHTML = player.L;
 
-        d('p-form').innerHTML = player.form.slice(-5).join("");
+        d('p-form').innerHTML = player.form.slice(-16).join("")
+            .replace(/W/g, formWin)
+            .replace(/L/g, formLoss);
 
         d('p-best-streak').innerHTML = player.streak.best;
         d('p-worst-streak').innerHTML = player.streak.worst;
