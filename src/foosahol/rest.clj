@@ -113,7 +113,7 @@
   (GET  "/results" [:as req]
         (if (= "POST" ((req :headers) "x-http-method-override"))
           (add-result ((req :query-params) "body") (cb req))
-          (success (p/all-results) (cb req))))
+          (success (assoc (p/all-results) :timestamp (System/currentTimeMillis)) (cb req))))
 
   (POST "/results" [:as req]
 	(add-result (body req) (cb req)))
