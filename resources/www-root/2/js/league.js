@@ -138,8 +138,8 @@ var LEAGUE = (function () {
                 });
 	    
                 if (p.brink.P > 0) {
-                    if (p.brink.W > p.brink.L) { p.badges.push("STEADY NERVE"); }
-                    if (p.brink.W < p.brink.L) { p.badges.push("CRUMBLES"); }
+                    if (p.brink.W / p.brink.P > 0.6) { p.badges.push("STEADY NERVE"); }
+                    if (p.brink.W / p.brink.P < 0.4) { p.badges.push("CRUMBLES"); }
                 }
 
             });
@@ -270,8 +270,8 @@ var LEAGUE = (function () {
         "UNICORN": "The ULTIMATE result.  10-0.  Enough said.",
         "UNICORNED": "The ULTIMATE humiliation.",
         "PHEW!": "Jesus! That was close!  You almost got unicorned! (beaten 10-1)",
-        "STEADY NERVE": "Wins >50% of golden-goal games",
-        "CRUMBLES": "Loses >50% of golden-goal games",
+        "STEADY NERVE": "Wins >60% of golden-goal games",
+        "CRUMBLES": "Loses >60% of golden-goal games",
         "BRINKSMAN": "Takes it to golden-goal more than anyone else",
         "RHINO!": "Ten goals in a row.  Pretty damn special if you ask me",
         "RHINOED!": "Doh the huge manatee - you got panned!",
