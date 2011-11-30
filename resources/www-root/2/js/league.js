@@ -274,7 +274,7 @@ var LEAGUE = (function () {
         "CRUMBLES": "Loses >60% of golden-goal games",
         "BRINKSMAN": "Takes it to golden-goal more than anyone else",
         "RHINO!": "Ten goals in a row.  Pretty damn special if you ask me",
-        "RHINOED!": "Doh the huge manatee - you got panned!",
+        "RHINOED!": "Doh the huge manatee - you got panned!"
     };
 
     return league;
@@ -285,6 +285,7 @@ var UI = (function (league, dom) {
     'use strict';
 
     var ui = {},
+        groupedBadges = {},
         m = dom.m, 
         d = dom.d,
  
@@ -348,8 +349,23 @@ var UI = (function (league, dom) {
             });
 
         dom.removeChildren(d('badgesbox'));
-        _(player.badges).each(function (b) { 
-            d('badgesbox').appendChild(m('span', {innerHTML: b, title: league.badges[b], className: "badge"})); 
+
+        groupedBadges = _(player.badges).reduce(function (counts, b) {
+            counts[b] = (counts[b] || 0) + 1;
+            return counts;
+        }, {});
+	
+        _(groupedBadges).each(function (count, badge) {
+            var classname = "badge",
+                badgetext = badge;
+
+            if (badge === "UNICORN") { classname += " rainbow"; }
+
+            if (count > 1) { badgetext += " &times;" + count; }
+	    
+
+            d('badgesbox').appendChild(m('span', 
+                {innerHTML: badgetext, title: league.badges[badge], className: classname})); 
         });
 	
     };
