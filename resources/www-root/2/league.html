@@ -9,10 +9,22 @@
 
     <div id="summarybar">
       <div class="summaryblock">
-        <h3>Total games:</h3>
+        <div>
+          <span class="timeselect" id="time-all">All time</span>
+          <span class="timeselect" id="time-month">This month</span>
+          <span class="timeselect" id="time-week">This week</span>
+        </div>
+        <div>
+          <span id="fromtime">~</span>
+          -
+          <span id="totime">~</span>
+        </div>
+      </div>
+      <div class="summaryblock">
+        <h3>Games:</h3>
         <span id="totalgames">~</span>
         <br/>
-        <h3>Total goals:</h3>
+        <h3>Goals:</h3>
         <span id="totalgoals">~</span>
       </div>
       <div class="summaryblock">
@@ -22,59 +34,63 @@
 
     <div>
       <h2>league<span class="stat">stat</span></h2>
-      <table id="leaguetable">
-        <tr>
-          <th>&nbsp;</th>
-          <th>Played</th>
-          <th>Won</th>
-          <th>Lost</th>
-          <th>Win Rate %</th>
-          <th>Goals For</th>
-          <th>Goals Against</th>
-          <th>Goal Difference Per Game</th>
-          <th>Badges</th>
-        </tr>
-      </table>
+      <div class="statarea">
+        <table id="leaguetable">
+          <tr>
+            <th>&nbsp;</th>
+            <th>Played</th>
+            <th>Won</th>
+            <th>Lost</th>
+            <th>Win Rate %</th>
+            <th>Goals For</th>
+            <th>Goals Against</th>
+            <th>Goal Difference Per Game</th>
+            <th>Badges</th>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <div>
       <h2><span id="p-name">player</span><span class="stat">stat</span></h2>
 
-      <div class="statbox">
-        <h3>Number<span class="stat">stat</span></h3>
-        <div class="statrow">
-          <div class="statitem">
-            <h4>Played</h4>
-            <span id="p-played">~</span>
+      <div class="statarea">
+        <div class="statbox">
+          <h3>Number<span class="stat">stat</span></h3>
+          <div class="statrow">
+            <div class="statitem">
+              <h4>Played</h4>
+              <span id="p-played">~</span>
+            </div>
+            <div class="statitem">
+              <h4>Won</h4>
+              <span id="p-won">~</span>
+            </div>
+            <div class="statitem">
+              <h4>Lost</h4>
+              <span id="p-lost">~</span>
+            </div>
           </div>
-          <div class="statitem">
-            <h4>Won</h4>
-            <span id="p-won">~</span>
+          <div class="statrow">
+            <div class="statitem">
+              <h4>Form</h4>
+              <span id="p-form">~</span>
+            </div>
           </div>
-          <div class="statitem">
-            <h4>Lost</h4>
-            <span id="p-lost">~</span>
-          </div>
-        </div>
-        <div class="statrow">
-          <div class="statitem">
-            <h4>Form</h4>
-            <span id="p-form">~</span>
-          </div>
-        </div>
-        <div class="statrow">
-          <h4>Streak</h4>
-          <div class="statitem">
-            <h5>Best</h5>
-            <span id="p-best-streak">~</span>
-          </div>
-          <div class="statitem">
-            <h5>Worst</h5>
-            <span id="p-worst-streak">~</span>
-          </div>
-          <div class="statitem">
-            <h5>Current</h5>
-            <span id="p-current-streak">~</span>
+          <div class="statrow">
+            <h4>Streak</h4>
+            <div class="statitem">
+              <h5>Best</h5>
+              <span id="p-best-streak">~</span>
+            </div>
+            <div class="statitem">
+              <h5>Worst</h5>
+              <span id="p-worst-streak">~</span>
+            </div>
+            <div class="statitem">
+              <h5>Current</h5>
+              <span id="p-current-streak">~</span>
+            </div>
           </div>
         </div>
       </div>

@@ -11,6 +11,10 @@ var RESULTS = (function () {
         data = d;
     };
 
+    results.getData = function () {
+        return data;
+    };
+
     results.getAllResults = function () {
         return data.results;
     };
@@ -341,7 +345,6 @@ var UI = (function (league, dom, results) {
     };
 
     ui.showPlayer = function (player) {
-        console.log(player);
         d('p-name').innerHTML = player.name;
 
         var prev = Math.max(player.P - 6, 0),
@@ -380,19 +383,19 @@ var UI = (function (league, dom, results) {
                 badgetext = badge;
 
             if (badge === "UNICORN") { classname += " rainbow"; }
-
             if (count > 1) { badgetext += " &times;" + count; }
 	    
-
             d('badgesbox').appendChild(m('span', 
                 {innerHTML: badgetext, title: league.badges[badge], className: classname})); 
         });
 	
     };
 
-    ui.showResults = function () {
-        var res = results.getAllResults(),
-            sortedPeople =  _(league.getPeople(res)).chain().sortBy(function (p) { return -p.WR; }).value();
+    ui.showResults = function (res) {
+        var sortedPeople =  _(league.getPeople(res)).chain()
+            .sortBy(function (p) { return -p.GDPG; })
+            .sortBy(function (p) { return -p.WR; })
+            .value();
 
         ui.showSummaryBar(res);
 
@@ -416,6 +419,58 @@ var UI = (function (league, dom, results) {
 
     };
 
+    ui.clearShown = function () {
+        var table = d('leaguetable');
+
+        dom.removeChildren(d('scoredist'));
+
+        while (document.getElementsByClassName('leaguerow').length !== 0) {
+            table.removeChild(document.getElementsByClassName('leaguerow')[0]);
+        }
+
+        d('time-all').className = "timeselect";
+        d('time-week').className = "timeselect";
+        d('time-month').className = "timeselect";
+    };
+
+    ui.showTimeRange = function (from, to) {
+        ui.clearShown();
+        d('fromtime').innerHTML = new Date(from).toDateString();
+        d('totime').innerHTML = new Date(to).toDateString();
+        ui.showResults(_(results.getAllResults()).filter(function (g) { return g.meta.timestamp >= from && g.meta.timestamp <= to; }));
+    };
+
+    ui.showAllResults = function () {
+        var data = results.getData();
+        ui.showTimeRange(data.results.slice(-1)[0].meta.timestamp, data.timestamp);
+        d('time-all').className += " selected";
+    };
+
+    ui.showMonth = function () {
+        var now = results.getData().timestamp,
+            month = new Date(now).getMonth(),
+            year = new Date(now).getFullYear(),
+            from = new Date(year, month, 1, 0, 0, 0, 0),
+            to = new Date(year, month + 1, 1, 0, 0, -1, 0);
+
+        ui.showTimeRange(from.getTime(), to.getTime());
+        d('time-month').className += " selected";
+    };
+
+    ui.showWeek = function () {
+        var now = new Date(results.getData().timestamp),
+            midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime(),
+            weekStart = midnight - (now.getDay() - 1) * 86400000,
+            weekEnd = weekStart + 7 * 86400000 - 1;
+
+        ui.showTimeRange(weekStart, weekEnd);
+        d('time-week').className += " selected";
+    };
+
+    d('time-all').onclick = ui.showAllResults;
+    d('time-month').onclick = ui.showMonth;
+    d('time-week').onclick = ui.showWeek;
+
     return ui;
 }(LEAGUE, DOM, RESULTS));
 
@@ -425,7 +480,7 @@ var UI = (function (league, dom, results) {
 
     xhr.get("/results", {ok: function (d) {
         results.setData(d);
-        ui.showResults();
+        ui.showMonth();
     }});
 
 }(XHR, LEAGUE, UI, RESULTS));

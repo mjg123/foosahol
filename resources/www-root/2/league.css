@@ -51,6 +51,10 @@ ul li {
    color: #C60;
 }
 
+.statarea {
+    margin-left: 16px;
+}
+
 .statbox {
    float: left;
    max-width: 33%;
@@ -116,6 +120,7 @@ table#leaguetable td,th {
 .summaryblock {
     float: left;
     margin-left: 16px;
+    text-align: center;
 }
 
 .summaryblock h3 {
@@ -123,6 +128,18 @@ table#leaguetable td,th {
     font-size: 100%;
 }
 
+.timeselect {
+    background-color: #EEE;
+    display: inline-block;
+    cursor: pointer;
+    margin: 8px;
+    padding: 2px;
+}
+
+.selected {
+    border: 1px solid #888;
+    background-color: #DDD;
+}
 
 .dbg {
    border: 1px solid teal;
