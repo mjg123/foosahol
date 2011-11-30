@@ -345,6 +345,8 @@ var UI = (function (league, dom, results) {
     };
 
     ui.showPlayer = function (player) {
+        console.log(player);
+
         d('p-name').innerHTML = player.name;
 
         var prev = Math.max(player.P - 6, 0),
