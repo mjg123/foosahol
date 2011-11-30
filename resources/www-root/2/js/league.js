@@ -1,11 +1,27 @@
 /*jslint indent: 4, nomen: false, maxerr: 50 */
 /*globals _,document,alert,DOM,XHR*/
 
+var RESULTS = (function () { 
+    'use strict';
+    
+    var data = {},
+        results = {};
+
+    results.setData = function (d) {
+        data = d;
+    };
+
+    results.getAllResults = function () {
+        return data.results;
+    };
+
+    return results;
+}());
+
 var LEAGUE = (function () {
     'use strict';
 
     var league = {},
-        data = {},
 
         isTeam1 = function (n, g) {
             return g.team1.attacker === n || g.team1.defender === n;
@@ -159,12 +175,8 @@ var LEAGUE = (function () {
 
         };
 
-    league.setData = function (_data) {
-        data = _data;
-    };
-
-    league.getPeople = function () {
-        var names =  _(data.results).chain()
+    league.getPeople = function (data) {
+        var names =  _(data).chain()
             .map(function (g) { return [g.team1.attacker, g.team1.defender, g.team2.attacker, g.team2.defender]; })
             .flatten().uniq().value(),
 
@@ -177,7 +189,7 @@ var LEAGUE = (function () {
 
             r.name = n;
 
-            _(data.results).chain().sortBy(function (g) { return g.meta.timestamp; })
+            _(data).chain().sortBy(function (g) { return g.meta.timestamp; })
                 .each(function (g) {
 
                     if (played(n, g)) {
@@ -245,7 +257,7 @@ var LEAGUE = (function () {
         });
 
         addStreaks(players);
-        addBadges(players, data.results);
+        addBadges(players, data);
 
         return players;
     };
@@ -281,7 +293,7 @@ var LEAGUE = (function () {
 
 }());
 
-var UI = (function (league, dom) {
+var UI = (function (league, dom, results) {
     'use strict';
 
     var ui = {},
@@ -300,24 +312,32 @@ var UI = (function (league, dom) {
                 "&chxs=0,990000,11,0,_|1,990000,1,0,_|2,990000,1,0,_" +
                 "&chm=o,990000,0," + data.length + ",4" +
                 "&chd=t:" + data.join();
+        },
+
+        makeScoreDist = function (dist) {
+            return "https://chart.googleapis.com/chart?cht=bvs&chs=270x50" +
+                "&chd=t:" + dist.join() + 
+                "&chco=336699" +
+                "&chbh=20" +
+                "&chds=0,9" +
+                "&chxt=x&chxl=0:|U|1|2|3|4|5|6|7|8|GG";
         };
 
-    ui.showTable = function () {
-        _(league.getPeople()).chain().sortBy(function (p) { return -p.WR; }).each(function (person) {
+    ui.showSummaryBar = function (res) {
 
-            var row = m('tr', {onclick: (function () { return function () { ui.showPlayer(person); }; }()), className: "leaguerow"});
+        d('totalgames').innerHTML = res.length;
 
-            row.appendChild(m('td', {innerHTML: person.name}));
-            row.appendChild(m('td', {innerHTML: person.P}));
-            row.appendChild(m('td', {innerHTML: person.W}));
-            row.appendChild(m('td', {innerHTML: person.L}));
-            row.appendChild(m('td', { children: [m('img', {src: spark(person.hist.WR), alt: person.WR.toFixed(0)})] }));
-            row.appendChild(m('td', {innerHTML: person.GF}));
-            row.appendChild(m('td', {innerHTML: person.GA}));
-            row.appendChild(m('td', {innerHTML: person.GDPG.toFixed(2)}));
-            row.appendChild(m('td', {innerHTML: person.badges.length}));
-            d('leaguetable').appendChild(row);
-        });
+        d('totalgoals').innerHTML = _(res).reduce(function (sum, g) {
+            return sum + g.team1.score + g.team2.score; 
+        }, 0);
+
+        var scoreDist = _(res).reduce(function (counts, g) {
+            counts[g.team1.score + g.team2.score - 10] += 1;
+            return counts;
+        }, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+        d('scoredist').appendChild(m('img', {src: makeScoreDist(scoreDist)}));
+
     };
 
     ui.showPlayer = function (player) {
@@ -369,17 +389,43 @@ var UI = (function (league, dom) {
         });
 	
     };
-    
+
+    ui.showResults = function () {
+        var res = results.getAllResults(),
+            sortedPeople =  _(league.getPeople(res)).chain().sortBy(function (p) { return -p.WR; }).value();
+
+        ui.showSummaryBar(res);
+
+        _(sortedPeople).each(function (person) {
+            var row = m('tr', {onclick: (function () { return function () { ui.showPlayer(person); }; }()), className: "leaguerow"});
+
+            row.appendChild(m('td', {innerHTML: person.name}));
+            row.appendChild(m('td', {innerHTML: person.P}));
+            row.appendChild(m('td', {innerHTML: person.W}));
+            row.appendChild(m('td', {innerHTML: person.L}));
+            row.appendChild(m('td', { children: [m('img', {src: spark(person.hist.WR), alt: person.WR.toFixed(0)})] }));
+            row.appendChild(m('td', {innerHTML: person.GF}));
+            row.appendChild(m('td', {innerHTML: person.GA}));
+            row.appendChild(m('td', {innerHTML: person.GDPG.toFixed(2)}));
+            row.appendChild(m('td', {innerHTML: person.badges.length}));
+
+            d('leaguetable').appendChild(row);
+        });
+
+        ui.showPlayer(sortedPeople[0]);
+
+    };
+
     return ui;
-}(LEAGUE, DOM));
+}(LEAGUE, DOM, RESULTS));
 
 
-(function (xhr, league, ui) {
+(function (xhr, league, ui, results) {
     'use strict';
 
     xhr.get("/results", {ok: function (d) {
-        league.setData(d);
-        ui.showTable();
+        results.setData(d);
+        ui.showResults();
     }});
 
-}(XHR, LEAGUE, UI));
+}(XHR, LEAGUE, UI, RESULTS));

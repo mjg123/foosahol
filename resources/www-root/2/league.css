@@ -5,6 +5,7 @@ body {
 }
 
 h1 {
+   border-bottom: 1px solid #888;
    font-weight: normal;
    font-size: 200%;
 }
@@ -105,6 +106,23 @@ table#leaguetable td,th {
     font-weight: bold;
     background-image: url('img/rainbow_square.jpg');
 }
+
+#summarybar {
+    padding: 0;
+    margin: 0;
+    overflow: auto;
+}
+
+.summaryblock {
+    float: left;
+    margin-left: 16px;
+}
+
+.summaryblock h3 {
+    display: inline-block;
+    font-size: 100%;
+}
+
 
 .dbg {
    border: 1px solid teal;

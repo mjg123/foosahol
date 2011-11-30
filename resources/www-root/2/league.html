@@ -7,6 +7,19 @@
   <body>
     <h1>foo<span class="stat">stat</span></h1>
 
+    <div id="summarybar">
+      <div class="summaryblock">
+        <h3>Total games:</h3>
+        <span id="totalgames">~</span>
+        <br/>
+        <h3>Total goals:</h3>
+        <span id="totalgoals">~</span>
+      </div>
+      <div class="summaryblock">
+        <span id="scoredist"></span>
+      </div>
+    </div>
+
     <div>
       <h2>league<span class="stat">stat</span></h2>
       <table id="leaguetable">
@@ -50,18 +63,18 @@
           </div>
         </div>
         <div class="statrow">
-	  <h4>Streak</h4>
+          <h4>Streak</h4>
           <div class="statitem">
             <h5>Best</h5>
-            <span id="p-best-streak">~</span>	    
+            <span id="p-best-streak">~</span>
           </div>
           <div class="statitem">
             <h5>Worst</h5>
-            <span id="p-worst-streak">~</span>	    
+            <span id="p-worst-streak">~</span>
           </div>
           <div class="statitem">
             <h5>Current</h5>
-            <span id="p-current-streak">~</span>	    
+            <span id="p-current-streak">~</span>
           </div>
         </div>
       </div>
