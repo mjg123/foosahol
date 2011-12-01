@@ -240,10 +240,14 @@ var LEAGUE = (function () {
 
             // some stats only count when both players were present
             _(names).chain().reject(function (on) { return n === on; }).each(function (on) {
-                r.team[on].whippingboy /= r.team[on].rival;
-                r.team[on].nemesis     /= r.team[on].rival;
-                r.team[on].partner     /= r.team[on].sidekick;
-                r.team[on].mismatch    /= r.team[on].sidekick;
+                if (r.team[on].rival > 0) {
+                    r.team[on].whippingboy /= r.team[on].rival;
+                    r.team[on].nemesis     /= r.team[on].rival;
+                }
+                if (r.team[on].sidekick > 0) {
+                    r.team[on].partner     /= r.team[on].sidekick;
+                    r.team[on].mismatch    /= r.team[on].sidekick;
+                }
             });
 
             if (r.P > 0) {

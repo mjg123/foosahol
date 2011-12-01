@@ -114,7 +114,7 @@ table#leaguetable td,th {
 #summarybar {
     padding: 0;
     margin: 0;
-    overflow: none;
+    overflow: auto;
 }
 
 .summaryblock {
