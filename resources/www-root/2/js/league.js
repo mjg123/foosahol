@@ -335,12 +335,45 @@ var UI = (function (league, dom, results) {
         },
 
         makeScoreDist = function (dist) {
-            return "https://chart.googleapis.com/chart?cht=bvs&chs=270x50" +
+            return "https://chart.googleapis.com/chart?cht=bvs&chs=270x80" +
                 "&chd=t:" + dist.join() + 
                 "&chco=336699" +
                 "&chbh=20" +
                 "&chds=0," + _(dist).max() +
                 "&chxt=x&chxl=0:|U|1|2|3|4|5|6|7|8|GG";
+        },
+
+        makeTimeDist = function (res) {
+            var d, h, 
+                xs = [], ys = [], ss = [],
+                maxS = 0,
+
+                dist = _(res).reduce(function (dist, g) {
+                    var d = new Date(g.meta.timestamp);
+                    dist[d.getDay()] = dist[d.getDay()] || [];
+                    dist[d.getDay()][d.getHours()] = dist[d.getDay()][d.getHours()] || 0;
+                    dist[d.getDay()][d.getHours()] += 1;
+                    return dist;
+                }, []);
+
+            for (d = 0; d < 7; d += 1) {
+                for (h = 0; h < 24; h += 1) {
+                    if (dist[d] && dist[d][h]) {
+                        xs.push(h * 4);
+                        ys.push(100 - (d * 14));
+                        ss.push(dist[d][h]);
+                        maxS = Math.max(maxS, dist[d][h]);
+                    }
+                }
+            }
+
+            return "https://chart.googleapis.com/chart?cht=s" +
+                "&chd=t:" + xs.join() + "|" + ys.join() + "|" + _(ss).map(function (v) { return v * 100 / maxS; }).join() + 
+                "&chxt=x,y" +
+                "&chco=336699" +
+                "&chxr=0,0,24,6" +
+                "&chxl=1:||Fri||Wed||Mon|" + 
+                "&chs=270x80";
         };
 
     ui.showSummaryBar = function (res) {
@@ -351,17 +384,19 @@ var UI = (function (league, dom, results) {
             return sum + g.team1.score + g.team2.score; 
         }, 0);
 
+
         var scoreDist = _(res).reduce(function (counts, g) {
             counts[g.team1.score + g.team2.score - 10] += 1;
             return counts;
         }, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
         d('scoredist').appendChild(m('img', {src: makeScoreDist(scoreDist)}));
+        d('timedist').appendChild(m('img', {src: makeTimeDist(res)}));
 
     };
 
     ui.showPlayer = function (player) {
-        console.log(player);
+//        console.log(player);
 
         d('p-name').innerHTML = player.name;
 
@@ -441,6 +476,7 @@ var UI = (function (league, dom, results) {
         var table = d('leaguetable');
 
         dom.removeChildren(d('scoredist'));
+        dom.removeChildren(d('timedist'));
 
         while (document.getElementsByClassName('leaguerow').length !== 0) {
             table.removeChild(document.getElementsByClassName('leaguerow')[0]);
