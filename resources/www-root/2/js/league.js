@@ -360,7 +360,7 @@ var UI = (function (league, dom, results) {
                 for (h = 0; h < 24; h += 1) {
                     if (dist[d] && dist[d][h]) {
                         xs.push(h * 4);
-                        ys.push(100 - (d * 14));
+                        ys.push(86 - (d * 14));
                         ss.push(dist[d][h]);
                         maxS = Math.max(maxS, dist[d][h]);
                     }
