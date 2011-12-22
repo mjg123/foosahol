@@ -186,6 +186,10 @@ var LEAGUE = (function () {
 
             players = {};
 
+        if (names.length === 0) {
+            return;
+        }
+
         _(names).each(function (n) {
             var r = { P : 0, W : 0, L : 0, GF : 0, GA : 0, GDPG : 0,
                 form : [], team : {}, badges : [],
@@ -327,7 +331,7 @@ var UI = (function (league, dom, results) {
                 "&chd=t:" + dist.join() + 
                 "&chco=336699" +
                 "&chbh=20" +
-                "&chds=0,9" +
+                "&chds=0," + _(dist).max() +
                 "&chxt=x&chxl=0:|U|1|2|3|4|5|6|7|8|GG";
         };
 
