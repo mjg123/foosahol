@@ -100,6 +100,14 @@ var LEAGUE = (function () {
                     .map(function (g) { return g.length; })
                     .max().value() * -1;
                 p.streak.current = grouped.slice(-1)[0].length * (grouped.slice(-1)[0][0] === "W" ? 1 : -1);
+
+                if (p.streak.worst === Infinity) {
+                    p.streak.worst = "N/A";
+                }
+
+                if (p.streak.best === -Infinity) {
+                    p.streak.best = "N/A";
+                }
             });
         },
 
