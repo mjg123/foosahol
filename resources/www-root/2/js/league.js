@@ -1,6 +1,8 @@
 /*jslint indent: 4, nomen: false, maxerr: 50 */
 /*globals _,document,alert,DOM,XHR*/
 
+alert("bo!");
+
 var RESULTS = (function () { 
     'use strict';
     
