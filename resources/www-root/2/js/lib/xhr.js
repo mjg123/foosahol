@@ -7,6 +7,7 @@ var XHR = (function(){
 
     xhr.makeXhr = function(){
         try { return new XMLHttpRequest(); } catch(e) {}
+	try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {}
         console.log("XMLHttpRequest not supported");
         return null;
     };
