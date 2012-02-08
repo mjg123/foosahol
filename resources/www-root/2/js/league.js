@@ -407,7 +407,7 @@ var UI = (function (league, dom, results) {
     };
 
     ui.showPlayer = function (player) {
-        A.msg("show-player", {"player": player});
+        A.msg("show-player", {"player": player.name});
 
         d('p-name').innerHTML = player.name;
 
