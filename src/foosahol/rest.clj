@@ -123,6 +123,11 @@
        (doseq [res (:results (read-json (body req)))]
 	 (add-result (json-str res) nil))
        (success (p/all-results)))
+
+  (GET "/analytics/:app" [app & {msg :msg}]
+       (let [msg (safe-read-json msg)]
+	 (p/add-analytics app msg)
+	 {:status 202 :body "kthxbai"}))
   
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))

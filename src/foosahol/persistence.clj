@@ -40,6 +40,10 @@
   (defn reset-results []
     (drop-coll! :results))
 
+  (defn add-analytics [app {cid :cid msgs :msgs}]
+    (mass-insert! :analytics 
+		  (map #(assoc {} :msg % :app app :cid cid) msgs)))
+  
   ;;;;;;;; END PROTOCOL ;;;;;;;;
   )
 
@@ -63,6 +67,11 @@
   (defn reset-results []
     (reset! results []))
 
+  (defn add-analytics [app {cid :cid msgs :msgs}]
+    (doall
+     (map println
+	  (map #(assoc {} :msg % :app app :cid cid) msgs))))
+  
   ;;;;; END PROTOCOL ;;;;;;;;
   )
 
