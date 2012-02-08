@@ -1,0 +1,3 @@
+m = function(){ emit(this.cid, {acts:[]}); }
+r = function(k,vs){ var cs={acts:[]}; vs.forEach(function(v){cs.acts.push(v)}); return cs; }
+db.analytics.mapReduce(m,r, {out:"example1"});
