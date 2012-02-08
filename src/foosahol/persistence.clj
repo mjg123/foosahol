@@ -42,7 +42,12 @@
 
   (defn add-analytics [app {cid :cid msgs :msgs}]
     (mass-insert! :analytics 
-		  (map #(assoc {} :msg % :app app :cid cid) msgs)))
+		  (map #(assoc {}
+			  :msg %
+			  :app app
+			  :cid cid
+			  :servertime (System/currentTimeMillis))
+		       msgs)))
   
   ;;;;;;;; END PROTOCOL ;;;;;;;;
   )

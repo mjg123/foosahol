@@ -124,10 +124,11 @@
 	 (add-result (json-str res) nil))
        (success (p/all-results)))
 
-  (GET "/analytics/:app" [app & {msg :msg}]
-       (let [msg (safe-read-json msg)]
+  (GET "/analytics/:app" [app & {cb :cb msg :msg}]
+       (let [cb (if cb cb "alert")
+	     msg (safe-read-json msg)]
 	 (p/add-analytics app msg)
-	 {:status 202 :body "kthxbai"}))
+	 {:status 202 :body (str cb "('kthxbai');")}))
   
   (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))

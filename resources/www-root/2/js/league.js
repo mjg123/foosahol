@@ -1,5 +1,16 @@
 /*jslint indent: 4, nomen: false, maxerr: 50 */
-/*globals _,document,alert,DOM,XHR*/
+/*globals _,window,document,alert,DOM,XHR,ANALYTICS,navigator*/
+
+var A = (function (a) {
+
+    var log = ANALYTICS.logfn("foos-league");
+
+    a.msg = function (e, d) {
+        log({event: e, data: d, ts: new Date().getTime()});
+    };
+
+    return a;
+}(A || {}));
 
 var RESULTS = (function () { 
     'use strict';
@@ -396,7 +407,7 @@ var UI = (function (league, dom, results) {
     };
 
     ui.showPlayer = function (player) {
-//        console.log(player);
+        A.msg("show-player", {"player": player});
 
         d('p-name').innerHTML = player.name;
 
@@ -495,12 +506,14 @@ var UI = (function (league, dom, results) {
     };
 
     ui.showAllResults = function () {
+        A.msg("show-all");
         var data = results.getData();
         ui.showTimeRange(data.results.slice(-1)[0].meta.timestamp, data.timestamp);
         d('time-all').className += " selected";
     };
 
     ui.showMonth = function () {
+        A.msg("show-month");
         var now = results.getData().timestamp,
             month = new Date(now).getMonth(),
             year = new Date(now).getFullYear(),
@@ -512,6 +525,7 @@ var UI = (function (league, dom, results) {
     };
 
     ui.showWeek = function () {
+        A.msg("show-week");
         var now = new Date(results.getData().timestamp),
             midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime(),
             weekStart = midnight - (now.getDay() - 1) * 86400000,
@@ -531,6 +545,25 @@ var UI = (function (league, dom, results) {
 
 (function (xhr, league, ui, results) {
     'use strict';
+
+    var getNav = function () {
+        var i, _navigator = {};
+        for (i in navigator) { // sorry, crockles
+            _navigator[i] = navigator[i];
+        }
+	
+        delete _navigator.plugins;
+        delete _navigator.mimeTypes;
+
+        return _navigator;
+    };
+
+
+    A.msg("loaded", getNav());
+
+    window.onbeforeunload = function () {
+        A.msg("closing");
+    };
 
     xhr.get("/results", {ok: function (d) {
         results.setData(d);
