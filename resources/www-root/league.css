@@ -152,8 +152,7 @@ table#leaguetable td,th {
    text-align: center;
    margin-top: 0;
    font-weight: normal;
-   height: 10%;
-   padding: 25px 0 10px 0;
+   padding: 20px 0;
  }
 
  .header-link { color: white; }
