@@ -153,6 +153,7 @@ table#leaguetable td,th {
    margin-top: 0;
    font-weight: normal;
    height: 10%;
+   padding: 25px 0 10px 0;
  }
 
  .header-link { color: white; }
