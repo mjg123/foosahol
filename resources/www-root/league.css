@@ -1,6 +1,5 @@
 
 body {
-   padding: 8px;
    cursor: default;
 }
 
@@ -144,3 +143,16 @@ table#leaguetable td,th {
 .dbg {
    border: 1px solid teal;
 }
+
+#common-header{ 
+   border-bottom: 3px solid #004;
+   border-top: 3px solid #004;
+   background-color: #67E;
+   color: #FFF;
+   text-align: center;
+   margin-top: 0;
+   font-weight: normal;
+   height: 10%;
+ }
+
+ .header-link { color: white; }
