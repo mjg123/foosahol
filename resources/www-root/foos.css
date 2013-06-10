@@ -2,31 +2,30 @@ html,body {
    height: 100%;
    margin: 0;
    padding: 0;
-   background-color: #EEE;
 }
 
 div.page {
    min-height: 100%;
    width: 100%;
-   padding: 0;
+   padding: 8px;
    display: none;
 }
 
 h1 {
    border-bottom: 3px solid #004;
+   border-top: 3px solid #004;
    background-color: #67E;
    color: #FFF;
    text-align: center;
    margin-top: 0;
    font-weight: normal;
-   height: 10%;
+   padding: 20px 0;
 }
 
 div#players {
    height: 90%;
    float: left;
-   width: 60%;
-   background-color: #EEE;
+   width: 50%;
    text-align: center;
 }
 
@@ -35,8 +34,8 @@ div#team {
    border-left: 2px solid #004;
    width: 39%;
    float: left;
-   background-color: #EEE;
    text-align: center;
+   padding-left: 50px;
 }
 
 div#players div.player {
@@ -201,3 +200,6 @@ div#scoresubmit textarea {
    background-color: blue;
    color: white;
 }
+
+.header-link { color: white; }
+.header-link-divider { color: black; }
