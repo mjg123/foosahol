@@ -1,0 +1,17 @@
+.rTable { margin-bottom: 12px; }
+
+.rTable td { padding: 4px; text-align: center; }
+.rTable .rScore { vertical-align: middle;
+                  font-style: italic;
+                  font-size: x-large;
+                  color: #444;}
+.rTable .rPos { font-style: italic;
+                color: #AAA;}
+.rTable .rDate { color: #AAA;
+                 font-size: small;}
+
+.red { background-color: #A00;
+       color: #FFF;}
+.blue { background-color: #00A;
+        color: #FFF}
+
