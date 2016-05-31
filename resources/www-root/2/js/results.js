@@ -41,7 +41,7 @@ var results = (function(xhr){
         game.appendChild(tr1);
         game.appendChild(tr2);
 
-        rDiv.insertBefore(game, rDiv.firstChild);
+        rDiv.appendChild(game);
     };
 
     var showResults = function(results){
