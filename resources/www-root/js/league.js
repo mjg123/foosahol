@@ -46,6 +46,14 @@ var LEAGUE = (function () {
             return g.team2.attacker === n || g.team2.defender === n;
         },
 
+        isAttacker = function (n, g) {
+            return g.team1.attacker === n || g.team2.attacker === n;
+        },
+
+        isDefender = function (n, g) {
+            return g.team1.defender === n || g.team2.defender === n;
+        },
+
         played = function (n, g) {
             return isTeam1(n, g) || isTeam2(n, g);
         },
@@ -165,6 +173,8 @@ var LEAGUE = (function () {
                 p.improvement = p.hist.WR[curr] / p.hist.WR[prev];
 
                 p.brink = { P : 0, W : 0, L : 0 };
+                p.attack = { P : 0, W : 0, L : 0 };
+                p.defend = { P : 0, W : 0, L : 0 };
                 _(games).each(function (g) {
                     var totalScore = g.team1.score + g.team2.score;
                     if (totalScore === 10 && won(p.name, g)) { p.badges.push("UNICORN"); }
@@ -174,11 +184,23 @@ var LEAGUE = (function () {
                     if (totalScore === 19 && lost(p.name, g)) { p.brink.P += 1; p.brink.L += 1; }
                     if (g.meta.rhino && won(p.name, g)) { p.badges.push("RHINO!"); }
                     if (g.meta.rhino && lost(p.name, g)) { p.badges.push("RHINOED!"); }
+                    if (isAttacker(p.name, g) && won(p.name, g)) { p.attack.P += 1; p.attack.W +=1; }
+                    if (isAttacker(p.name, g) && lost(p.name, g)) { p.attack.P += 1; p.attack.L +=1; }
+                    if (isDefender(p.name, g) && won(p.name, g)) { p.defend.P += 1; p.defend.W +=1; }
+                    if (isDefender(p.name, g) && lost(p.name, g)) { p.defend.P += 1; p.defend.L +=1; }
                 });
 	    
                 if (p.brink.P > 0) {
                     if (p.brink.W / p.brink.P > 0.6) { p.badges.push("STEADY NERVE"); }
                     if (p.brink.W / p.brink.P < 0.4) { p.badges.push("CRUMBLES"); }
+                }
+                if (p.attack.P > 0) {
+                    if (p.attack.W / p.attack.P > 0.6) { p.badges.push("STRIKER"); }
+                    if (p.attack.W / p.attack.P < 0.4) { p.badges.push("BANANA FOOT"); }
+                }
+                if (p.defend.P > 0) {
+                    if (p.defend.W / p.defend.P > 0.6) { p.badges.push("SHIELD WALL"); }
+                    if (p.defend.W / p.defend.P < 0.4) { p.badges.push("COLANDER"); }
                 }
 
             });
@@ -317,7 +339,11 @@ var LEAGUE = (function () {
         "CRUMBLES": "Loses >60% of golden-goal games",
         "BRINKSMAN": "Takes it to golden-goal more than anyone else",
         "RHINO!": "Ten goals in a row.  Pretty damn special if you ask me",
-        "RHINOED!": "Doh the huge manatee - you got panned!"
+        "RHINOED!": "Doh the huge manatee - you got panned!",
+        "STRIKER": "Wins >60% of matches when playing as attacker",
+        "BANANA FOOT": "Loses >60% of matches when playing as attacker",
+        "SHIELD WALL": "Wins >60% of matches when playing as defender",
+        "COLANDER": "Loses >60% of matches when playing as defender"
     };
 
     return league;

@@ -1,69 +1,101 @@
 <html>
   <head>
-    <title>This is foosahol</title>
+
+    <title>Wilkommen auf FOOS</title>
+
+    <link rel="stylesheet" type="text/css" href="reset.css"/>
     <link rel="stylesheet" type="text/css" href="foos.css"/>
+
   </head>
   <body>
 
-    <select id="t1a">
-    </select>
-    <input type="button" value="&#x21C4;" id="t1s"/>
-    <select id="t1d">
-    </select>
-    <select id="team1colour">
-      <option>red</option>
-      <option>blue</option>
-      <option>yellow</option>
-      <option>black</option>
-    </select>
+    <h1>
+      <a href="index.html" class="header-link">Game</a>
+      <span class="header-link-divider">|</span>
+      <a href="league.html" class="header-link">Stats</a>
+    </h1>
 
-    <br/>
-    <input type="button" value="0" class="scorebutton" id="t10"/>
-    <input type="button" value="1" class="scorebutton" id="t11"/>
-    <input type="button" value="2" class="scorebutton" id="t12"/>
-    <input type="button" value="3" class="scorebutton" id="t13"/>
-    <input type="button" value="4" class="scorebutton" id="t14"/>
-    <input type="button" value="5" class="scorebutton" id="t15"/>
-    <input type="button" value="6" class="scorebutton" id="t16"/>
-    <input type="button" value="7" class="scorebutton" id="t17"/>
-    <input type="button" value="8" class="scorebutton" id="t18"/>
-    <input type="button" value="9" class="scorebutton" id="t19"/>
+    <div class="page" id="loading-page">
+    </div>
 
-    <br/>
-    <input type="button" value="-- / --" disabled="disabled" id="submit"/>
+    <div class="page" id="choose-players-page">
 
-    <br/>
-    <input type="button" value="0" class="scorebutton" id="t20"/>
-    <input type="button" value="1" class="scorebutton" id="t21"/>
-    <input type="button" value="2" class="scorebutton" id="t22"/>
-    <input type="button" value="3" class="scorebutton" id="t23"/>
-    <input type="button" value="4" class="scorebutton" id="t24"/>
-    <input type="button" value="5" class="scorebutton" id="t25"/>
-    <input type="button" value="6" class="scorebutton" id="t26"/>
-    <input type="button" value="7" class="scorebutton" id="t27"/>
-    <input type="button" value="8" class="scorebutton" id="t28"/>
-    <input type="button" value="9" class="scorebutton" id="t29"/>
+      <div id="players">
+        <h2>The bench</h2>
+      </div>
 
-    <br/>
+      <div id="team">
+        <h2>The team</h2>
+        <div class="player empty" id="player-choice-1">empty</div>
+        <div class="player empty" id="player-choice-2">empty</div>
+        <div class="player empty" id="player-choice-3">empty</div>
+        <div class="player empty" id="player-choice-4">empty</div>
+        <input type="button" id="chosen-players" value="lets go"/>
+      </div>
 
-    <select id="t2d">
-    </select>
-    <input type="button" value="&#x21C4;" id="t2s"/>
-    <select id="t2a">
-    </select>
-    <select id="team2colour">
-      <option>red</option>
-      <option>blue</option>
-      <option>yellow</option>
-      <option>black</option>
-    </select>
+    </div>
 
-    <a href="/2/league.html">league</a>
+    <div class="page" id="game-in-progress">
 
-    <script type="text/javascript" src="js/underscore-min.js"></script>
-    <script type="text/javascript" src="js/backbone-min.js"></script>
-    <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
-    <script type="text/javascript" src="js/foos.js"></script>
+      <div class="teambar t1" id="team1bar">
+        <div class="teamplayer" id="t1a">t1a</div>
+        <div class="team-swap" id="t1swap">&#x21C4;</div>
+        <div class="teamplayer" id="t1d">t1d</div>
+      </div>
 
+      <div class="score-counter-right t1">
+        <input class="scorer t1" type="button" id="t1score0" value="0"/>
+        <input class="scorer t1" type="button" id="t1score1" value="1"/>
+        <input class="scorer t1" type="button" id="t1score2" value="2"/>
+        <input class="scorer t1" type="button" id="t1score3" value="3"/>
+        <input class="scorer t1" type="button" id="t1score4" value="4"/>
+        <input class="scorer t1" type="button" id="t1score5" value="5"/>
+        <input class="scorer t1" type="button" id="t1score6" value="6"/>
+        <input class="scorer t1" type="button" id="t1score7" value="7"/>
+        <input class="scorer t1" type="button" id="t1score8" value="8"/>
+        <input class="scorer t1" type="button" id="t1score9" value="9"/>
+      </div>
+
+      <img id="tableimg" src="img/pitch.png"/>
+
+      <div class="score-counter-left t2">
+        <input class="scorer t2" type="button" id="t2score9" value="9"/>
+        <input class="scorer t2" type="button" id="t2score8" value="8"/>
+        <input class="scorer t2" type="button" id="t2score7" value="7"/>
+        <input class="scorer t2" type="button" id="t2score6" value="6"/>
+        <input class="scorer t2" type="button" id="t2score5" value="5"/>
+        <input class="scorer t2" type="button" id="t2score4" value="4"/>
+        <input class="scorer t2" type="button" id="t2score3" value="3"/>
+        <input class="scorer t2" type="button" id="t2score2" value="2"/>
+        <input class="scorer t2" type="button" id="t2score1" value="1"/>
+        <input class="scorer t2" type="button" id="t2score0" value="0"/>
+      </div>
+
+      <div class="teambar t2" id="team2bar">
+        <div class="teamplayer" id="t2d">t2d</div>
+        <div class="team-swap" id="t2swap">&#x21C4;</div>
+        <div class="teamplayer" id="t2a">t2a</div>
+      </div>
+
+      <div id="teamshuffle"><div>&#x21BA;</div></div>
+
+      <div id="scoresubmit">
+        <div id="score">-- / --</div>
+        <textarea id="meta" placeholder="comments?"></textarea>
+        <div id="rhino">
+          <label for="rhinobox">rhino</label>
+          <input type="checkbox" id="rhinobox"/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div>
+      <a href="/2/league.html">league</a>
+    </div>
+
+    <script src="js/lib/underscore-min.js"></script>
+    <script src="js/foos.js"></script>
   </body>
 </html>
