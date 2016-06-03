@@ -22,18 +22,26 @@ var results = (function(xhr){
         td0.setAttribute("colspan", 5);
         tr0.appendChild(td0);
 
+        if (r.team1.score == 10) {
+          winner = r.team1
+          loser = r.team2
+        } else {
+          winner = r.team2
+          loser = r.team1
+        }
+
         var tr1 = d.createElement("tr");
         tr1.appendChild(createTd("rPos", "D"));
-        tr1.appendChild(createTd(r.team1.colour, r.team1.defender));
-        tr1.appendChild(createTd("rScore", r.team1.score + " - " + r.team2.score, true));
-        tr1.appendChild(createTd(r.team2.colour, r.team2.attacker));
+        tr1.appendChild(createTd(winner.colour, winner.defender));
+        tr1.appendChild(createTd("rScore", winner.score + " - " + loser.score, true));
+        tr1.appendChild(createTd(loser.colour, loser.attacker));
         tr1.appendChild(createTd("rPos", "A"));
 
         var tr2 = d.createElement("tr");
         tr2.appendChild(createTd("rPos", "A"));
-        tr2.appendChild(createTd(r.team1.colour, r.team1.attacker));
+        tr2.appendChild(createTd(winner.colour, winner.attacker));
         // score in here...
-        tr2.appendChild(createTd(r.team2.colour, r.team2.defender));
+        tr2.appendChild(createTd(loser.colour, loser.defender));
         tr2.appendChild(createTd("rPos", "D"));
 
         game.appendChild(tr0);
