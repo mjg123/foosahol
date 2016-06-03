@@ -540,24 +540,18 @@ var UI = (function (league, dom, results) {
 
     ui.showMonth = function () {
         A.msg("show-month");
-        var now = results.getData().timestamp,
-            month = new Date(now).getMonth(),
-            year = new Date(now).getFullYear(),
-            from = new Date(year, month, 1, 0, 0, 0, 0),
-            to = new Date(year, month + 1, 1, 0, 0, -1, 0);
-
+        var to = new Date(results.getData().timestamp),
+            from = new Date(to - daysToMilliseconds(30));
         ui.showTimeRange(from.getTime(), to.getTime());
         d('time-month').className += " selected";
     };
 
     ui.showWeek = function () {
         A.msg("show-week");
-        var now = new Date(results.getData().timestamp),
-            midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime(),
-            weekStart = midnight - (now.getDay() - 1) * 86400000,
-            weekEnd = weekStart + 7 * 86400000 - 1;
+        var to = new Date(results.getData().timestamp),
+            from = new Date(to - daysToMilliseconds(7));
 
-        ui.showTimeRange(weekStart, weekEnd);
+        ui.showTimeRange(from.getTime(), to.getTime());
         d('time-week').className += " selected";
     };
 
@@ -568,6 +562,7 @@ var UI = (function (league, dom, results) {
     return ui;
 }(LEAGUE, DOM, RESULTS));
 
+function daysToMilliseconds(days) { return days * 24 * 60 * 60 * 1000; }
 
 (function (xhr, league, ui, results) {
     'use strict';
@@ -593,7 +588,7 @@ var UI = (function (league, dom, results) {
 
     xhr.get("/results", {ok: function (d) {
         results.setData(d);
-        ui.showMonth();
+        ui.showAllResults();
     }});
 
 }(XHR, LEAGUE, UI, RESULTS));
