@@ -11,14 +11,14 @@ var results = (function(xhr){
         return td;
     }
 
-    var showResult = function(r){
+    var makeResult = function(r){
         var game = d.createElement("table");
         game.className = "rTable";
 
         var tr0 = d.createElement("tr");
         var td0 = d.createElement("td");
         td0.className = "rDate";
-        td0.innerHTML = new Date(r.meta.timestamp);
+        td0.innerHTML = new Date(r.meta.timestamp).toLocaleTimeString();
         td0.setAttribute("colspan", 5);
         tr0.appendChild(td0);
 
@@ -36,19 +36,49 @@ var results = (function(xhr){
         tr2.appendChild(createTd(r.team2.colour, r.team2.defender));
         tr2.appendChild(createTd("rPos", "D"));
 
-
         game.appendChild(tr0);
         game.appendChild(tr1);
         game.appendChild(tr2);
 
-        rDiv.appendChild(game);
+        return game;
     };
+
+    var days = [":(", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    var dayOf = function(result){
+        var d = new Date(result.meta.timestamp);
+        return days[d.getDay()] + " " + d.getDate() +" "+ months[d.getMonth()] + " " + (d.getYear()+1900);
+    }
+
+    var newDayDiv = function(result){
+        var dayDiv = d.createElement("div");
+        dayDiv.className = "dayDiv";
+        var dayHeader = d.createElement("h2");
+        dayHeader.innerHTML = dayOf(result);
+        dayHeader.className = "dayHeader";
+        dayDiv.appendChild(dayHeader);
+        return dayDiv;
+    }
 
     var showResults = function(results){
         console.log(results);
         rDiv.innerHTML = '';
 
-        _.each(results.results, showResult);
+        currentDayDiv = newDayDiv(results.results[0]);
+        previousDay = dayOf(results.results[0]);
+
+        for (i=0; i<results.results.length; i++){
+            var thisRes = results.results[i];
+            if (dayOf(thisRes)!=previousDay){
+                rDiv.appendChild(currentDayDiv);
+                currentDayDiv = newDayDiv(thisRes);
+            }
+            currentDayDiv.appendChild(makeResult(results.results[i]));
+        }
+
+        rDiv.appendChild(currentDayDiv);
+
     };
 
     xhr.get("/results", {ok: showResults});
