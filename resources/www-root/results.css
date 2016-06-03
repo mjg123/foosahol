@@ -17,6 +17,8 @@
                  font-size: small;}
 
 .red { background-color: #A00;
-       color: #FFF;}
+       color: #FFF;
+       width: 150px;}
 .blue { background-color: #00A;
-        color: #FFF}
+        color: #FFF;
+        width: 150px;}
