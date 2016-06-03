@@ -73,6 +73,7 @@ var results = (function(xhr){
             if (dayOf(thisRes)!=previousDay){
                 rDiv.appendChild(currentDayDiv);
                 currentDayDiv = newDayDiv(thisRes);
+                previousDay = dayOf(thisRes);
             }
             currentDayDiv.appendChild(makeResult(results.results[i]));
         }
