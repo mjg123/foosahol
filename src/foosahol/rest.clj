@@ -104,12 +104,6 @@
   (GET  "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
   (POST "/dev" [:as req] (json-str (assoc (dissoc req :body) :body (body req))))
 
-  (DELETE "/results" [:as req]
-	  (if-let [timestamp ((req :query-params) "timestamp")]
-	    (do (p/delete-result timestamp)
-		{:status 204})
-	    (error "show me the timestamp")))
-
   (GET  "/results" [:as req]
         (if (= "POST" ((req :headers) "x-http-method-override"))
           (add-result ((req :query-params) "body") (cb req))
