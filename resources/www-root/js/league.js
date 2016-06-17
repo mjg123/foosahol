@@ -500,7 +500,26 @@ var UI = (function (league, dom, results) {
             row.appendChild(m('td', {innerHTML: person.GF}));
             row.appendChild(m('td', {innerHTML: person.GA}));
             row.appendChild(m('td', {innerHTML: person.GDPG.toFixed(2)}));
-            row.appendChild(m('td', {innerHTML: person.badges.length}));
+            var dom_badges = row.appendChild(m('td'));
+
+            groupedBadges = _(person.badges).reduce(function (counts, b) {
+                counts[b] = (counts[b] || 0) + 1
+                return counts
+            }, {})
+
+            _(groupedBadges).each(function (count, badge) {
+            var classname = "badge",
+                badgetext = badge
+
+            if (badge === "UNICORN")
+                classname += " rainbow"
+
+            if (count > 1)
+                badgetext += " &times;" + count
+
+            dom_badges.appendChild(m('span',
+                {innerHTML: badgetext, title: league.badges[badge], className: classname}))
+            })
 
             d('leaguetable').appendChild(row);
         });
