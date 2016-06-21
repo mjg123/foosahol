@@ -63,10 +63,11 @@ function add_player(name, chosen) {
 
 function populate_players(results) {
   $.each(results, function(index, value) {
-    var name = value['team1']['attacker']
-
-    if (players.indexOf(name) === -1)
-      players.push(name)
+    var name
+    name = value['team1']['attacker']; if (players.indexOf(name) === -1) players.push(name)
+    name = value['team1']['defender']; if (players.indexOf(name) === -1) players.push(name)
+    name = value['team2']['attacker']; if (players.indexOf(name) === -1) players.push(name)
+    name = value['team2']['defender']; if (players.indexOf(name) === -1) players.push(name)
   })
 
   players.sort()
