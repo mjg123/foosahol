@@ -5,6 +5,9 @@ var game_timestamp
 var current_score = null
 var loser_color // blue or red
 var selected = [] // list of the 4 names picked for playing
+var hash = null
+var not_fastforward = false
+
 
 var score_lookup = {
   'unicorn': 0,
@@ -120,25 +123,15 @@ function new_player() {
 }
 
 function show_table(fade) {
-  if ((typeof fade === 'undefined') || (fade !== false))
-    $('#selection').fadeOut('fast', function() {
-      $('#table').css({opacity: 0.1})
-      $('#table').fadeTo('fast', 1.0)
-    })
+  if ((typeof fade === 'undefined') || (fade !== false)) {
+    not_fastforward = true
+    window.location = '#table'
+  }
 
-  $("#ba").text(selected[0])
-  $("#bd").text(selected[1])
-  $("#ra").text(selected[2])
-  $("#rd").text(selected[3])
-
-  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-
-  var rotate = $('#rotate')
-  rotate.offset({
-    left: (w-rotate.outerWidth())/2,
-    top: (h-rotate.outerHeight())/2
-  })
+  $("#ba").text(selected[0]); $('#ba').css('width', 'auto')
+  $("#bd").text(selected[1]); $('#bd').css('width', 'auto')
+  $("#ra").text(selected[2]); $('#ra').css('width', 'auto')
+  $("#rd").text(selected[3]); $('#rd').css('width', 'auto')
 }
 
 function rotate() {
@@ -156,17 +149,13 @@ function results() {
   loser_color = "Blue" // default
   current_score = null
 
-  $('#table').fadeOut('fast', function() {
-    $('#results').css({opacity: 0.1})
-    $('#results').fadeTo('fast', 1.0)
-  })
+  not_fastforward = true
+  window.location = '#results'
+
   $('#text-ba').text(selected[0])
   $('#text-bd').text(selected[1])
   $('#text-ra').text(selected[2])
   $('#text-rd').text(selected[3])
-  // prevent accidental refresh by swiping down on Android,
-  // not a problem because there's a Cancel button :)
-  document.body.style.overflowY = 'hidden'
 }
 
 function change_color_cb(event, state) {
@@ -194,12 +183,7 @@ function ready_to_validate(e, score) {
 }
 
 function next_game() {
-  $('#results').fadeOut('fast', function() {
-    $('#table').css({opacity: 0.1})
-    $('#table').fadeTo('fast', 1.0)
-  })
-  // Allow to refresh the app by swiping-down
-  document.body.style.overflowY = 'auto'
+  history.back(1);
 }
 
 function validate_and_next_game() {
@@ -236,6 +220,47 @@ function cancel_and_next_game() {
   next_game()
 }
 
+function change_screen() {
+  console.log(hash + ' --> ' + window.location.hash, not_fastforward)
+
+  if (window.location.hash == '') {
+    if (hash == '#table') {
+      $('#table').fadeOut('fast', function() {
+        $('#selection').css({opacity: 0.1})
+        $('#selection').fadeTo('fast', 1.0)
+      })
+    }
+  }
+
+  if (window.location.hash == '#table') {
+    if (!not_fastforward)
+      show_table(true)
+    $(hash == '#results' ?  '#results' : '#selection').fadeOut('fast', function() {
+      $('#table').css({opacity: 0.1})
+      $('#table').fadeTo('fast', 1.0)
+    })
+  }
+
+  if (window.location.hash == '#results') {
+    if (!not_fastforward)
+      results()
+    $('#table').fadeOut('fast', function() {
+      $('#results').css({opacity: 0.1})
+      $('#results').fadeTo('fast', 1.0)
+    })
+  }
+
+  hash = window.location.hash
+  if (hash === '')
+    document.body.style.overflowY = 'auto'
+  else
+    // prevent accidental refresh by swiping down on Android,
+    // not a problem because there's a Cancel button :)
+    document.body.style.overflowY = 'hidden'
+
+  not_fastforward = false
+}
+
 $(document).ready(function() {
   XHR().get("results", {
     ok: function(r,s){ populate_players(r.results) }
@@ -245,7 +270,9 @@ $(document).ready(function() {
     cancel: false,
     connectToSortable: '.container',
     containment: 'document',
-    helper: 'clone'
+    revert: true,
+    revertDuration: 0,
+    stack: "#ra"
   })
 
   $(".droppable").droppable({
@@ -259,14 +286,25 @@ $(document).ready(function() {
         return
 
       // move the buttons labels around
-      $(ui.draggable).text(selected[idx_dest])
       button.text(selected[idx_src])
+      button.width('auto')
+      $(ui.draggable).text(selected[idx_dest])
+      $(ui.draggable).width('auto')
 
       var tmp = selected[idx_dest]
       selected[idx_dest] = selected[idx_src]
       selected[idx_src] = tmp
     },
     hoverClass: 'dropping'
+  })
+
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+
+  var _rotate = $('#rotate')
+  _rotate.offset({
+    left: (w - _rotate.outerWidth())/2,
+    top: (h - _rotate.outerHeight())/2
   })
 
   $('#loser').bootstrapSwitch()
@@ -280,4 +318,6 @@ $(document).ready(function() {
   $('.scorevalue').on('click', ready_to_validate)
   $('#validate').on('click', validate_and_next_game)
   $('#cancel-game').on('click', cancel_and_next_game)
+
+  $(window).bind('hashchange', change_screen)
 })

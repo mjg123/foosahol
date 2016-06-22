@@ -8,6 +8,7 @@ html, body, * {
   font-family: 'Sriracha', cursive;
   font-size: 24px;
 }
+
 button.btn, button.btn * {
   font-size: 30px;
 }
@@ -54,6 +55,14 @@ button.btn, button.btn * {
 
 #players {
   margin: 0px;
+}
+
+#players.table-striped>tbody>tr:nth-of-type(odd) {
+  background: #eeeeff;
+}
+
+#players.table-striped>tbody>tr:nth-of-type(even) {
+  background: #ffeeee;
 }
 
 #players_table {
@@ -111,26 +120,9 @@ button.btn, button.btn * {
   font-family: 'Kalam', cursive;;
 }
 
-.attacker.blue.dropping {
+.blue.dropping {
   background: #6093DB;
-  background: linear-gradient(135deg, #ffffff 0%,#3366ff 33%);
 }
-
-.defender.blue.dropping {
-  background: #6093DB;
-  background: linear-gradient(45deg, #3366ff 66%,#ffffff 100%);
-}
-
-.defender.red.dropping {
-  background: #6093DB;
-  background: linear-gradient(45deg, #ffffff 0%,#ff6666 33%);
-}
-
-.attacker.red.dropping {
-  background: #6093DB;
-  background: linear-gradient(135deg, #ff6666 66%,#ffffff 100%);
-}
-
 
 .red.dropping {
   background: #FF8C8C;
@@ -142,6 +134,10 @@ button.btn, button.btn * {
 
 #rotate {
   position: absolute;
+}
+
+button:focus {
+  outline: none !important;
 }
 
 #rotate.btn.btn-circle {
@@ -254,7 +250,6 @@ td#text-ra {
   text-align: left;
   white-space: nowrap;
   padding-left: 0.5em;
-  font-size: 24px;
 }
 
 #ba, #bd, #ra, #rd {
