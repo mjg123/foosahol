@@ -221,8 +221,6 @@ function cancel_and_next_game() {
 }
 
 function change_screen() {
-  console.log(hash + ' --> ' + window.location.hash, not_fastforward)
-
   if (window.location.hash == '') {
     if (hash == '#table') {
       $('#table').fadeOut('fast', function() {
