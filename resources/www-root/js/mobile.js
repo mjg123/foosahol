@@ -365,7 +365,7 @@ function center_rotate() {
   var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
   var rotate = $('#rotate')
-  rotate.offset({
+  rotate.css({
     left: (w - rotate.outerWidth())/2,
     top: (h - rotate.outerHeight())/2
   })
