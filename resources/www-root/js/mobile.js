@@ -317,9 +317,9 @@ function center_rotate() {
   var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
   var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
-  var _rotate = $('#rotate')
-  _rotate.offset({
-    left: (w - _rotate.outerWidth())/2,
-    top: (h - _rotate.outerHeight())/2
+  var rotate = $('#rotate')
+  rotate.offset({
+    left: (w - rotate.outerWidth())/2,
+    top: (h - rotate.outerHeight())/2
   })
 }
