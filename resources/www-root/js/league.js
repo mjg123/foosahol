@@ -501,6 +501,7 @@ var UI = (function (league, dom, results) {
             row.appendChild(m('td', {innerHTML: person.GA}));
             row.appendChild(m('td', {innerHTML: person.GDPG.toFixed(2)}));
             var dom_badges = row.appendChild(m('td'));
+            dom_badges.className = "one-liner"
 
             groupedBadges = _(person.badges).reduce(function (counts, b) {
                 counts[b] = (counts[b] || 0) + 1
