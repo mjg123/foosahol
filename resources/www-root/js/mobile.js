@@ -8,7 +8,6 @@ var selected = [] // list of the 4 names picked for playing
 var hash = null
 var not_fastforward = false
 
-
 var score_lookup = {
   'unicorn': 0,
   'phew!': 1,
@@ -64,16 +63,38 @@ function add_player(name, chosen) {
     select(null, cell)
 }
 
+var names = {}
+
+function count_one_player(name, won) {
+  try {
+    names[name] = [names[name][0]+won, names[name][1]+1]
+  } catch(err) {
+    names[name] = [won ? 1 : 0,1]
+  }
+}
+
+function count_player_stats(team_results) {
+  var won = team_results['score'] == 10
+
+  count_one_player(team_results['defender'], won)
+  count_one_player(team_results['attacker'], won)
+}
+
 function populate_players(results) {
   $.each(results, function(index, value) {
-    var name
-    name = value['team1']['attacker']; if (players.indexOf(name) === -1) players.push(name)
-    name = value['team1']['defender']; if (players.indexOf(name) === -1) players.push(name)
+    count_player_stats(value['team1'])
+    count_player_stats(value['team2'])
+
     name = value['team2']['attacker']; if (players.indexOf(name) === -1) players.push(name)
     name = value['team2']['defender']; if (players.indexOf(name) === -1) players.push(name)
   })
 
-  players.sort()
+  $.each(names, function(name, val) {
+    names[name] = Math.ceil(100.0*val[0]/val[1])
+  })
+
+  players = Object.keys(names)
+  players.sort(function(a, b) { return names[b] - names[a] })
 
   $.each(players, function(index, value) {
     add_player(value, false)
@@ -307,6 +328,32 @@ $(document).ready(function() {
   $('.scorevalue').on('click', ready_to_validate)
   $('#validate').on('click', validate_and_next_game)
   $('#cancel-game').on('click', cancel_and_next_game)
+
+  var pressTimer
+  $('#players_table').on('mouseup', function() {
+    clearTimeout(pressTimer);
+    return false
+  }).on('mousedown', function() {
+    pressTimer = window.setTimeout(function() {
+      var msg = '<pre>'
+      $(players).each(function(index, value) {
+        if (names[value] != 100)
+          msg += ' '
+        if (names[value] < 10)
+          msg += ' '
+        msg += names[value] + ': ' + value + '\n'
+      })
+      msg += '</pre>'
+      $('#stats').html(msg)
+      $('#stats').dialog({
+        modal: true,
+        open: function(event, ui) {
+          $('.ui-widget-overlay').bind('click', function(){ $("#stats").dialog('close') })
+        }
+      })
+    }, 500);
+    return false
+  })
 
   $(window).bind('hashchange', change_screen)
   $(window).bind('resize', center_rotate)
