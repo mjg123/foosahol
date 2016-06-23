@@ -156,7 +156,7 @@ function show_table(fade) {
 }
 
 function rotate() {
-  selected = [selected[3], selected[0], selected[1], selected[2]]
+  selected = [selected[1], selected[2], selected[3], selected[0]]
   show_table(false)
 }
 
