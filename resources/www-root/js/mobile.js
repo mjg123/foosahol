@@ -296,15 +296,6 @@ $(document).ready(function() {
     hoverClass: 'dropping'
   })
 
-  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-
-  var _rotate = $('#rotate')
-  _rotate.offset({
-    left: (w - _rotate.outerWidth())/2,
-    top: (h - _rotate.outerHeight())/2
-  })
-
   $('#loser').bootstrapSwitch()
 
   // Jquery handlers
@@ -318,4 +309,17 @@ $(document).ready(function() {
   $('#cancel-game').on('click', cancel_and_next_game)
 
   $(window).bind('hashchange', change_screen)
+  $(window).bind('resize', center_rotate)
+  center_rotate()
 })
+
+function center_rotate() {
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+
+  var rotate = $('#rotate')
+  rotate.offset({
+    left: (w - rotate.outerWidth())/2,
+    top: (h - rotate.outerHeight())/2
+  })
+}
