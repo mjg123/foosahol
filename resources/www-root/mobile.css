@@ -262,3 +262,13 @@ button img {
 button#rotate img {
   margin-right: 0px;
 }
+
+#stats {
+  font-size: 14px;
+  line-height: 1.1em;
+  display: none;
+}
+
+div.ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix.ui-draggable-handle {
+  display: none;
+}
