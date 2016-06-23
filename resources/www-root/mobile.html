@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <link rel="manifest" href="manifest.json">
+
+    <title>Foos</title>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+          crossorigin="anonymous" />
+
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+    <!-- allow drag/drop on mobile -->
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="js/jquery.ui.touch-punch.min.js"></script>
+
+    <!-- nice switch blue/red -->
+    <script src="js/bootstrap-switch.min.js"></script>
+    <link href="bootstrap-switch.min.css" rel="stylesheet" />
+
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Coming+Soon|Kalam:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Sriracha" rel="stylesheet">
+
+    <link rel="stylesheet" href="mobile.css" />
+  </head>
+
+  <body>
+
+    <div id="selection">
+      <div id="loading" class="vcenter">
+        <h3>loading data...</h3>
+      </div>
+      <div id="players_table">
+        <table id="players" class="table table-striped table-responsive">
+          <tbody></tbody>
+        </table>
+      </div>
+      <button id="new-player" class="btn btn-default" type="submit">
+        <img src="img/icon-addfriend.png" /> New Player
+      </button>
+
+      <div id="gogogo-container">
+        <button id="gogogo" class="btn btn-success" type="submit">
+          <img src="img/icon-ok-white.png" />
+          Team-up
+        </button>
+      </div>
+    </div>
+
+<!-- ----------------------------------------------------------------------------- -->
+
+    <div id="table">
+      <div class="contents">
+        <div class="col-md-6 attacker quarter blue vcenter droppable">
+          <div class="attacker"><h1>Attack</h1>
+            <button id="ba" class="btn dragdrop btn-default btn-lg"></button>
+          </div>
+        </div>
+
+        <div class="col-md-6 defender quarter blue vcenter droppable">
+          <div class="defender"><h1>Defense</h1>
+            <button id="bd" class="btn dragdrop btn-default btn-lg"></button>
+          </div>
+        </div>
+
+        <div class="col-md-6 defender quarter red vcenter droppable">
+          <div class="defender"><h1>Defense</h1>
+            <button id="rd" class="btn dragdrop btn-default btn-lg"></button>
+          </div>
+        </div>
+
+        <div class="col-md-6 attacker quarter red vcenter droppable">
+          <div class="attacker"><h1>Attack</h1>
+            <button id="ra" class="btn dragdrop btn-default btn-lg"></button>
+          </div>
+        </div>
+
+        <button id="rotate" type="button" class="btn btn-warning btn-circle">
+          <img src="img/icon-refresh-white.png" />
+        </button>
+      </div>
+      <div id="startgame-container">
+        <button id="startgame" class="btn btn-success" type="submit">
+          <img src="img/icon-pitch-white.png" /> Go go go
+        </button>
+      </div>
+    </div>
+
+<!-- ----------------------------------------------------------------------------- -->
+
+    <div id="results">
+      <button id="validate" class="btn btn-success" type="submit">
+        <img src="img/icon-ok-sign-white.png" /> Save Score
+      </button>
+      <div id="results_content">
+        <input id="loser" type="checkbox" data-size="large" name="loser" data-on-color="primary"
+               data-on-text="Blue" data-off-text="Red" data-off-color="danger"
+               data-label-text="LOSER" data-handle-width="80" />
+        <div id="score_table">
+          <table id="score" class="table table-striped table-responsive">
+            <tbody>
+              <tr><td class="scorevalue">7</td>
+                  <td class="scorevalue">8</td>
+                  <td class="scorevalue">9</td></tr>
+              <tr><td class="scorevalue">4</td>
+                  <td class="scorevalue">5</td>
+                  <td class="scorevalue">6</td></tr>
+              <tr><td class="scorevalue">phew!</td>
+                  <td class="scorevalue">2</td>
+                  <td class="scorevalue">3</td></tr>
+              <tr><td class="scorevalue" colspan="3">unicorn</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <button id="cancel-game" class="btn btn-danger" type="submit">
+        <img src="img/icon-trash-white.png" /> Cancel
+        </button>
+        <table id="summary">
+          <tr><td>Blue Attacker</td><td id="text-ba"></td></tr>
+          <tr><td>Blue Defender</td><td id="text-bd"></td></tr>
+          <tr><td>Red Attacker</td><td id="text-ra"></td></tr>
+          <tr><td>Red Defender</td><td id="text-rd"></td></tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+<script tyle="text/javascript" src="js/mobile.js"></script>
