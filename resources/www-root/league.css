@@ -160,3 +160,7 @@ table#leaguetable td,th {
  .header-link-divider { color: black; }
 
 .left { text-align: left; }
+
+.one-liner {
+  white-space: nowrap;
+}
