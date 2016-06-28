@@ -105,7 +105,8 @@ table#leaguetable td,th {
 }
 
 .rainbow {
-    color: #FFF;
+    color: #000;
+    text-shadow: 0 0 3px #ffffff, 0 0 3px #ffffff, 1px 1px 3px #ffffff, -1px -1px 3px #ffffff, 0 0 4px #ffffff, 0 0 4px #ffffff, 0 0 5px #ffffff, 0 0 5px #ffffff, 0 0 6px #ffffff, 0 0 6px #ffffff;
     font-weight: bold;
     background-image: url('img/rainbow_square.jpg');
 }
