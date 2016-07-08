@@ -231,7 +231,7 @@ function validate_and_next_game() {
   }
 
   console.log("sending ", data, "to the server")
-	XHR.post("/results", {ok: console.log, body: JSON.stringify(data)});
+  XHR.post("/results", {ok: console.log, body: JSON.stringify(data)});
 
   next_game()
 }
@@ -326,7 +326,12 @@ $(document).ready(function() {
   $('#startgame').on('click', results)
   $('#loser').on('switchChange.bootstrapSwitch', change_color_cb)
   $('.scorevalue').on('click', ready_to_validate)
-  $('#validate').on('click', validate_and_next_game)
+  $('#validate').on('click', function() {
+    var winner_attacker = (loser_color == "Red") ? selected[0] : selected[2]
+    var winner_defender = (loser_color == "Red") ? selected[1] : selected[3]
+    if (confirm('These guys *WON* the match?\n- '+winner_attacker +'\n- '+winner_defender))
+      validate_and_next_game()
+  })
   $('#cancel-game').on('click', cancel_and_next_game)
 
   var pressTimer
