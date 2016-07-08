@@ -18,7 +18,7 @@ var score_lookup = {
   '6': 6,
   '7': 7,
   '8': 8,
-  '9': 9
+  'GG': 9
 }
 
 function XHR(){
